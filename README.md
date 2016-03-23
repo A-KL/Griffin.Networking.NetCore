@@ -9,7 +9,7 @@
 		{
 			var server = new MessagingServer(new MyHttpServiceFactory(),
 												new MessagingServerConfiguration(new HttpMessageFactory()));
-			server.Start(new IPEndPoint(IPAddress.Loopback, 8888));
+			server.Start(new IPEndPoint(IPAddress.Parse("192.168.1.12"), 8080));
 		}
 	}
 	 
