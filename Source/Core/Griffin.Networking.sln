@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Networking", "Griffin.Networking\Griffin.Networking.csproj", "{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Griffin.Networking.Protocol.Http", "Protocols\Http\Griffin.Networking.Protocol.Http\Griffin.Networking.Protocol.Http.csproj", "{4271A51F-07B3-464E-8784-D44E95AF0065}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Debug|ARM.ActiveCfg = Debug|ARM
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Debug|ARM.Build.0 = Debug|ARM
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Debug|x64.ActiveCfg = Debug|x64
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Debug|x64.Build.0 = Debug|x64
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Debug|x86.ActiveCfg = Debug|x86
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Debug|x86.Build.0 = Debug|x86
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Release|ARM.ActiveCfg = Release|ARM
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Release|ARM.Build.0 = Release|ARM
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Release|x64.ActiveCfg = Release|x64
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Release|x64.Build.0 = Release|x64
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Release|x86.ActiveCfg = Release|x86
+		{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}.Release|x86.Build.0 = Release|x86
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Debug|ARM.ActiveCfg = Debug|ARM
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Debug|ARM.Build.0 = Debug|ARM
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Debug|x64.ActiveCfg = Debug|x64
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Debug|x64.Build.0 = Debug|x64
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Debug|x86.ActiveCfg = Debug|x86
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Debug|x86.Build.0 = Debug|x86
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Release|ARM.ActiveCfg = Release|ARM
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Release|ARM.Build.0 = Release|ARM
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Release|x64.ActiveCfg = Release|x64
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Release|x64.Build.0 = Release|x64
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Release|x86.ActiveCfg = Release|x86
+		{4271A51F-07B3-464E-8784-D44E95AF0065}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{ADBB0496-E4BC-4EEF-9CA7-A1507581F7BA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Griffin.Networking</RootNamespace>
+    <AssemblyName>Griffin.Networking</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buffers\BufferSlice.cs" />
+    <Compile Include="Buffers\StringBufferSliceReader.cs" />
+    <Compile Include="Buffers\BufferSliceStack.cs" />
+    <Compile Include="Buffers\BufferWriter.cs" />
+    <Compile Include="Buffers\CircularStream.cs" />
+    <Compile Include="Buffers\IBufferReader.cs" />
+    <Compile Include="Buffers\IBufferSlice.cs" />
+    <Compile Include="Buffers\IStringBufferReader.cs" />
+    <Compile Include="Buffers\IBufferSliceStack.cs" />
+    <Compile Include="Buffers\IBufferStream.cs" />
+    <Compile Include="Buffers\IBufferWrapper.cs" />
+    <Compile Include="Buffers\IBufferWriter.cs" />
+    <Compile Include="Buffers\IPeekable.cs" />
+    <Compile Include="Buffers\NamespaceDoc.cs" />
+    <Compile Include="Buffers\PeekableMemoryStream.cs" />
+    <Compile Include="Buffers\PooledBufferSlice.cs" />
+    <Compile Include="Buffers\SliceStream.cs" />
+    <Compile Include="Clients\BinaryClient.cs" />
+    <Compile Include="Clients\ClientBase.cs" />
+    <Compile Include="ISocketWriterJob.cs" />
+    <Compile Include="Messaging\MessagingClient.cs" />
+    <Compile Include="Clients\NamespaceDoc.cs" />
+    <Compile Include="Clients\ReceivedBufferEventArgs.cs" />
+    <Compile Include="Messaging\MessagingService.cs" />
+    <Compile Include="Messaging\ReceivedMessageEventArgs.cs" />
+    <Compile Include="DisconnectEventArgs.cs" />
+    <Compile Include="Messaging\MessagingServer.cs" />
+    <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="Pipelines\IDownstreamHandler.cs" />
+    <Compile Include="Pipelines\IPipeline.cs" />
+    <Compile Include="Pipelines\IPipelineFactory.cs" />
+    <Compile Include="Pipelines\IPipelineHandler.cs" />
+    <Compile Include="Pipelines\IPipelineHandlerContext.cs" />
+    <Compile Include="Pipelines\IPipelineMessage.cs" />
+    <Compile Include="IServiceLocator.cs" />
+    <Compile Include="Pipelines\IUpstreamHandler.cs" />
+    <Compile Include="Logging\BaseLogger.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\FilteredLogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Logging\NamespaceDoc.cs" />
+    <Compile Include="Logging\NullLogger.cs" />
+    <Compile Include="Logging\SimpleFilteredLogManager.cs" />
+    <Compile Include="Logging\SimpleLogManager.cs" />
+    <Compile Include="Messaging\IMessageBuilder.cs" />
+    <Compile Include="Messaging\IMessageFormatterFactory.cs" />
+    <Compile Include="Messaging\IMessageSerializer.cs" />
+    <Compile Include="Messaging\NamespaceDoc.cs" />
+    <Compile Include="Pipelines\Messages\ClientConnected.cs" />
+    <Compile Include="Pipelines\Messages\BindSocket.cs" />
+    <Compile Include="Pipelines\Messages\Close.cs" />
+    <Compile Include="Pipelines\Messages\Closed.cs" />
+    <Compile Include="Pipelines\Messages\Connect.cs" />
+    <Compile Include="Pipelines\Messages\Connected.cs" />
+    <Compile Include="Pipelines\Messages\Disconnect.cs" />
+    <Compile Include="Pipelines\Messages\Disconnected.cs" />
+    <Compile Include="Pipelines\Messages\PipelineFailure.cs" />
+    <Compile Include="Pipelines\Messages\Received.cs" />
+    <Compile Include="Pipelines\Messages\ReceivedInStream.cs" />
+    <Compile Include="Pipelines\Messages\SendBuffer.cs" />
+    <Compile Include="Pipelines\Messages\SendSlice.cs" />
+    <Compile Include="Pipelines\Messages\SendStream.cs" />
+    <Compile Include="Pipelines\Messages\Sent.cs" />
+    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="Pipelines\DelegatePipelineFactory.cs" />
+    <Compile Include="Pipelines\Pipeline.cs" />
+    <Compile Include="Pipelines\PipelineDownstreamContext.cs" />
+    <Compile Include="Pipelines\PipelineServer.cs" />
+    <Compile Include="Pipelines\PipelineNetworkService.cs" />
+    <Compile Include="Pipelines\PipelineUpstreamContext.cs" />
+    <Compile Include="Pipelines\ServiceLocatorPipelineFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Servers\ClientExceptionEventArgs.cs" />
+    <Compile Include="Servers\NamespaceDoc.cs" />
+    <Compile Include="Servers\ServerBase.cs" />
+    <Compile Include="Servers\ServerClientContext.cs" />
+    <Compile Include="Servers\IServiceFactory.cs" />
+    <Compile Include="Servers\INetworkService.cs" />
+    <Compile Include="Servers\IServerClientContext.cs" />
+    <Compile Include="Messaging\MessagingClientContext.cs" />
+    <Compile Include="Messaging\MessagingServerConfiguration.cs" />
+    <Compile Include="Servers\Server.cs" />
+    <Compile Include="Servers\ServerConfiguration.cs" />
+    <Compile Include="Servers\ServiceExceptionContext.cs" />
+    <Compile Include="SliceSocketWriterJob.cs" />
+    <Compile Include="SocketWriter.cs" />
+    <Compile Include="StreamSocketWriterJob.cs" />
+    <EmbeddedResource Include="Properties\Griffin.Networking.rd.xml" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
