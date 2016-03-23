@@ -24,7 +24,7 @@ namespace Griffin.Networking.Protocol.Http
         /// </summary>
         public HttpMessageFactory()
         {
-            stack = new BufferSliceStack(100, 65535);
+            this.stack = new BufferSliceStack(100, 65535);
         }
 
         #region IMessageFormatterFactory Members
@@ -44,7 +44,7 @@ namespace Griffin.Networking.Protocol.Http
         /// <returns></returns>
         public IMessageBuilder CreateBuilder()
         {
-            return new HttpMessageBuilder(stack);
+            return new HttpMessageBuilder(this.stack);
         }
 
         #endregion

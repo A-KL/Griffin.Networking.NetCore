@@ -9,8 +9,8 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             if (name == null) throw new ArgumentNullException("name");
             if (value == null) throw new ArgumentNullException("value");
-            Name = name;
-            Value = value;
+            this.Name = name;
+            this.Value = value;
         }
 
         #region IHeaderItem Members
@@ -32,7 +32,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <returns>true if equal; otherwase false;</returns>
         public bool Is(string value)
         {
-            return Value.Equals(value, StringComparison.OrdinalIgnoreCase);
+            return this.Value.Equals(value, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
 
         public void AddValue(string value)
         {
-            Value += ", " + value;
+            this.Value += ", " + value;
         }
     }
 }

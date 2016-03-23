@@ -29,7 +29,7 @@ namespace Griffin.Networking.Pipelines
         /// <returns>Created client</returns>
         protected override INetworkService CreateClient(EndPoint remoteEndPoint)
         {
-            return new PipelineNetworkService(factory.Build());
+            return new PipelineNetworkService(this.factory.Build());
         }
     }
 }

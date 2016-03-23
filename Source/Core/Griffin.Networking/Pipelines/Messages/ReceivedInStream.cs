@@ -19,7 +19,7 @@ namespace Griffin.Networking.Pipelines.Messages
             if (stream == null) throw new ArgumentNullException("stream");
             if (!(stream is IPeekable))
                 throw new ArgumentException("streams used in this message must implement IPeekable.");
-            Stream = stream;
+            this.Stream = stream;
         }
 
         /// <summary>

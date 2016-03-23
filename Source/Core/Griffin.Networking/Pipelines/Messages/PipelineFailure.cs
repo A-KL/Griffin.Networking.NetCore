@@ -18,7 +18,7 @@ namespace Griffin.Networking.Pipelines.Messages
             if (exception == null)
                 throw new ArgumentNullException("exception");
 
-            Exception = exception;
+            this.Exception = exception;
         }
 
         /// <summary>

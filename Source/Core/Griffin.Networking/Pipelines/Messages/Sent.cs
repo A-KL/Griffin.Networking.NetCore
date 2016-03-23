@@ -17,7 +17,7 @@ namespace Griffin.Networking.Pipelines.Messages
             if (bufferSlice == null)
                 throw new ArgumentNullException("bufferSlice");
 
-            BufferSlice = bufferSlice;
+            this.BufferSlice = bufferSlice;
         }
 
         /// <summary>

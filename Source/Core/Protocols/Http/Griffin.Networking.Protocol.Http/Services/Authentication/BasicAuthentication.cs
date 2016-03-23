@@ -35,7 +35,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication
         /// </summary>
         public void CreateChallenge(IRequest httpRequest, IResponse response)
         {
-            response.AddHeader("WWW-Authenticate", "Basic realm=\"" + realm + "\"");
+            response.AddHeader("WWW-Authenticate", "Basic realm=\"" + this.realm + "\"");
             response.StatusCode = 401;
         }
 
@@ -72,7 +72,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication
             var password = decoded.Substring(pos + 1, decoded.Length - pos - 1);
             var userName = decoded.Substring(0, pos);
 
-            var user = userService.Lookup(userName, request.Uri);
+            var user = this.userService.Lookup(userName, request.Uri);
             if (user == null)
                 return null;
 

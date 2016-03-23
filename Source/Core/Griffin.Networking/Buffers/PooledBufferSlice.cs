@@ -28,12 +28,12 @@ namespace Griffin.Networking.Buffers
             if (bufferSliceStack == null) throw new ArgumentNullException("bufferSliceStack");
             if (buffer == null) throw new ArgumentNullException("buffer");
 
-            Buffer = buffer;
-            Offset = offset;
-            Count = count;
+            this.Buffer = buffer;
+            this.Offset = offset;
+            this.Count = count;
             this.bufferSliceStack = bufferSliceStack;
-            initialSize = count;
-            initialOffset = offset;
+            this.initialSize = count;
+            this.initialOffset = offset;
         }
 
         #region IBufferSlice Members
@@ -63,11 +63,11 @@ namespace Griffin.Networking.Buffers
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            if (isDisposed)
+            if (this.isDisposed)
                 throw new InvalidOperationException(
                     "Don't dispose me twice, since it will screw up the stack that I came from.");
 
-            bufferSliceStack.Push(this);
+            this.bufferSliceStack.Push(this);
         }
 
         #endregion
@@ -80,7 +80,7 @@ namespace Griffin.Networking.Buffers
         public bool IsMyStack(IBufferSliceStack stack)
         {
             if (stack == null) throw new ArgumentNullException("stack");
-            return ReferenceEquals(bufferSliceStack, stack);
+            return ReferenceEquals(this.bufferSliceStack, stack);
         }
 
         /// <summary>
@@ -88,9 +88,9 @@ namespace Griffin.Networking.Buffers
         /// </summary>
         public void Reset()
         {
-            Count = initialSize;
-            Offset = initialOffset;
-            isDisposed = false;
+            this.Count = this.initialSize;
+            this.Offset = this.initialOffset;
+            this.isDisposed = false;
         }
     }
 }

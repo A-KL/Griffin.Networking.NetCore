@@ -25,8 +25,8 @@ namespace Griffin.Networking
         {
             if (stream == null) throw new ArgumentNullException("stream");
             this.stream = stream;
-            logger.Debug(string.Format("Stream position: {0}, size: {1}", stream.Position, stream.Length));
-            bytesLeft = (int)stream.Length - (int)stream.Position;
+            this.logger.Debug(string.Format("Stream position: {0}, size: {1}", stream.Position, stream.Length));
+            this.bytesLeft = (int)stream.Length - (int)stream.Position;
         }
 
         #region ISocketWriterJob Members
@@ -37,9 +37,9 @@ namespace Griffin.Networking
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            if (stream == null) return;
-            stream.Dispose();
-            stream = null;
+            if (this.stream == null) return;
+            this.stream.Dispose();
+            this.stream = null;
         }
 
         /// <summary>
@@ -49,13 +49,13 @@ namespace Griffin.Networking
         public void Write(SocketAsyncEventArgs args)
         {
             var buffer = (IBufferSlice)args.UserToken;
-            var bytesToSend = Math.Min(bytesLeft, buffer.Count);
-            var bytesRead = stream.Read(buffer.Buffer, buffer.Offset, bytesToSend);
+            var bytesToSend = Math.Min(this.bytesLeft, buffer.Count);
+            var bytesRead = this.stream.Read(buffer.Buffer, buffer.Offset, bytesToSend);
             if (bytesRead == 0)
                 throw new InvalidOperationException(
                     "Failed to read bytes from the stream. Did you remember to set the correct Postition in the stream?");
 
-            logger.Debug(string.Format("Writing {0} bytes of total {1}", bytesRead, stream.Length));
+            this.logger.Debug(string.Format("Writing {0} bytes of total {1}", bytesRead, this.stream.Length));
             args.SetBuffer(buffer.Buffer, buffer.Offset, bytesRead);
         }
 
@@ -66,9 +66,9 @@ namespace Griffin.Networking
         /// <returns><c>true</c> if everything was sent; otherwise <c>false</c>.</returns>
         public bool WriteCompleted(int bytes)
         {
-            bytesLeft -= bytes;
-            logger.Debug("Write completed, bytes left " + bytesLeft);
-            return bytesLeft == 0;
+            this.bytesLeft -= bytes;
+            this.logger.Debug("Write completed, bytes left " + this.bytesLeft);
+            return this.bytesLeft == 0;
         }
 
         #endregion
@@ -81,7 +81,7 @@ namespace Griffin.Networking
         /// </returns>
         public override string ToString()
         {
-            return string.Format("Stream {0} at position {1} of {2}.", stream, stream.Position, stream.Length);
+            return string.Format("Stream {0} at position {1} of {2}.", this.stream, this.stream.Position, this.stream.Length);
         }
     }
 }

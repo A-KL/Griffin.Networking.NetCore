@@ -20,7 +20,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         public Nonce(DateTime expires)
         {
             this.expires = expires;
-            counts = new List<int>();
+            this.counts = new List<int>();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         /// </summary>
         public IEnumerable<int> PassedCounts
         {
-            get { return counts; }
+            get { return this.counts; }
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         /// </summary>
         public bool Expired
         {
-            get { return expires > DateTime.Now; }
+            get { return this.expires > DateTime.Now; }
         }
 
         /// <summary>
@@ -51,15 +51,15 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         /// <returns>true if counter is currently unused and within the range; otherwise false;</returns>
         public bool Validate(int value)
         {
-            if (PassedCounts.Contains(value) || value <= (PassedCounts.Any() ? PassedCounts.Min() : 0))
+            if (this.PassedCounts.Contains(value) || value <= (this.PassedCounts.Any() ? this.PassedCounts.Min() : 0))
             {
                 return false;
             }
-            if (counts.Count <= 5 || value > 5)
+            if (this.counts.Count <= 5 || value > 5)
                 return false;
 
-            LastUpdate = DateTime.Now;
-            counts.Add(value);
+            this.LastUpdate = DateTime.Now;
+            this.counts.Add(value);
             return true;
         }
     }

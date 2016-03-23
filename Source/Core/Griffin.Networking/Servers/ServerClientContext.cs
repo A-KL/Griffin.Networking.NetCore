@@ -33,12 +33,12 @@ namespace Griffin.Networking.Servers
         {
             if (readBuffer == null) throw new ArgumentNullException("readBuffer");
             this.readBuffer = readBuffer;
-            readStream = new SliceStream(ReadBuffer);
-            readArgs = new SocketAsyncEventArgs();
-            readArgs.Completed += OnReadCompleted;
-            readArgs.SetBuffer(this.readBuffer.Buffer, this.readBuffer.Offset, this.readBuffer.Count);
-            writer = new SocketWriter();
-            writer.Disconnected += OnWriterDisconnect;
+            this.readStream = new SliceStream(this.ReadBuffer);
+            this.readArgs = new SocketAsyncEventArgs();
+            this.readArgs.Completed += this.OnReadCompleted;
+            this.readArgs.SetBuffer(this.readBuffer.Buffer, this.readBuffer.Offset, this.readBuffer.Count);
+            this.writer = new SocketWriter();
+            this.writer.Disconnected += this.OnWriterDisconnect;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Griffin.Networking.Servers
         /// </summary>
         protected IBufferSlice ReadBuffer
         {
-            get { return readBuffer; }
+            get { return this.readBuffer; }
         }
 
         #region IServerClientContext Members
@@ -56,7 +56,7 @@ namespace Griffin.Networking.Servers
         /// </summary>
         public IPEndPoint RemoteEndPoint
         {
-            get { return remoteEndPoint; }
+            get { return this.remoteEndPoint; }
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Griffin.Networking.Servers
         public void Send(IBufferSlice slice, int length)
         {
             if (slice == null) throw new ArgumentNullException("slice");
-            writer.Send(new SliceSocketWriterJob(slice, length));
+            this.writer.Send(new SliceSocketWriterJob(slice, length));
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Griffin.Networking.Servers
         public void Send(Stream stream)
         {
             if (stream == null) throw new ArgumentNullException("stream");
-            writer.Send(new StreamSocketWriterJob(stream));
+            this.writer.Send(new StreamSocketWriterJob(stream));
         }
 
         /// <summary>
@@ -102,14 +102,14 @@ namespace Griffin.Networking.Servers
         /// </summary>
         public virtual void Close()
         {
-            if (socket == null)
+            if (this.socket == null)
                 return;
 
             try
             {
                 //_socket.Shutdown(SocketShutdown.Both);
                 //_socket.Disconnect(true);
-                socket.Dispose();
+                this.socket.Dispose();
             }
             catch (Exception err)
             {
@@ -122,17 +122,17 @@ namespace Griffin.Networking.Servers
 
         private void Cleanup()
         {
-            if (socket.Connected)
-                Close();
+            if (this.socket.Connected)
+                this.Close();
 
-            socket = null;
+            this.socket = null;
 
-            if (client == null)
+            if (this.client == null)
                 return;
 
-            client.Dispose();
-            client = null;
-            writer.Reset();
+            this.client.Dispose();
+            this.client = null;
+            this.writer.Reset();
         }
 
         private void OnWriterDisconnect(object sender, DisconnectEventArgs e)
@@ -153,7 +153,7 @@ namespace Griffin.Networking.Servers
         /// <remarks>Remember to call the <c>base</c> when you override this method (to trigger the Disconnected event)</remarks>
         protected virtual void OnDisconnect(SocketError error)
         {
-            Disconnected(this, new DisconnectEventArgs(error));
+            this.Disconnected(this, new DisconnectEventArgs(error));
         }
 
 
@@ -164,7 +164,7 @@ namespace Griffin.Networking.Servers
         protected virtual void TriggerClientReceive(object data)
         {
             if (data == null) throw new ArgumentNullException("data");
-            client.HandleReceive(data);
+            this.client.HandleReceive(data);
         }
 
         /// <summary>
@@ -175,52 +175,52 @@ namespace Griffin.Networking.Servers
 
         private void OnReadCompleted(object sender, SocketAsyncEventArgs e)
         {
-            logger.Trace(string.Format("Received {0} from {1}", e.BytesTransferred, remoteEndPoint));
+            this.logger.Trace(string.Format("Received {0} from {1}", e.BytesTransferred, this.remoteEndPoint));
             if (e.BytesTransferred > 0 && e.SocketError == SocketError.Success)
             {
-                readStream.Position = 0;
-                readStream.SetLength(e.BytesTransferred);
+                this.readStream.Position = 0;
+                this.readStream.SetLength(e.BytesTransferred);
 
                 try
                 {
-                    HandleRead(readBuffer, e.BytesTransferred);
+                    this.HandleRead(this.readBuffer, e.BytesTransferred);
                 }
                 catch (Exception err)
                 {
-                    logger.Warning("Unhandled exception", err);
+                    this.logger.Warning("Unhandled exception", err);
 
-                    var buffer = new BufferSlice(readBuffer.Buffer, readBuffer.Offset, e.BytesTransferred);
+                    var buffer = new BufferSlice(this.readBuffer.Buffer, this.readBuffer.Offset, e.BytesTransferred);
                     var context = new ServiceExceptionContext(err, buffer);
-                    client.OnUnhandledException(context);
+                    this.client.OnUnhandledException(context);
 
                     if (context.CanExceptionBePropagated)
                     {
                         var args = new ClientExceptionEventArgs(this, err, buffer);
-                        UnhandledExceptionCaught(this, args);
+                        this.UnhandledExceptionCaught(this, args);
                         if (!args.CanContinue)
                         {
-                            logger.Debug("Signalled to stop processing");
+                            this.logger.Debug("Signalled to stop processing");
                             return;
                         }
                     }
 
                     if (!context.MayContinue)
                     {
-                        logger.Debug("ClientService signaled to stop processing");
-                        Cleanup();
+                        this.logger.Debug("ClientService signaled to stop processing");
+                        this.Cleanup();
                         return;
                     }
                 }
 
                 try
                 {
-                    bool isPending = socket.ReceiveAsync(readArgs);
+                    bool isPending = this.socket.ReceiveAsync(this.readArgs);
                     if (!isPending)
-                        OnReadCompleted(socket, readArgs);
+                        this.OnReadCompleted(this.socket, this.readArgs);
                 }
                 catch (ObjectDisposedException)
                 {
-                    Cleanup();
+                    this.Cleanup();
                     return;
                 }
             }
@@ -233,9 +233,9 @@ namespace Griffin.Networking.Servers
                                 ? SocketError.ConnectionReset
                                 : e.SocketError;
 
-                Cleanup();
+                this.Cleanup();
                 if (e.SocketError != SocketError.OperationAborted)
-                    OnDisconnect(error);
+                    this.OnDisconnect(error);
             }
         }
 
@@ -250,7 +250,7 @@ namespace Griffin.Networking.Servers
         /// </remarks>
         protected virtual void HandleRead(IBufferSlice readBuffer, int bytesReceived)
         {
-            client.HandleReceive(readStream);
+            this.client.HandleReceive(this.readStream);
         }
 
         /// <summary>
@@ -265,14 +265,14 @@ namespace Griffin.Networking.Servers
             this.socket = socket;
             this.client = client;
             this.client.Assign(this);
-            writer.Assign(socket);
+            this.writer.Assign(socket);
 
             var ep = (IPEndPoint)this.socket.RemoteEndPoint;
-            remoteEndPoint = new IPEndPoint(ep.Address, ep.Port);
+            this.remoteEndPoint = new IPEndPoint(ep.Address, ep.Port);
 
-            var willRaiseEvent = this.socket.ReceiveAsync(readArgs);
+            var willRaiseEvent = this.socket.ReceiveAsync(this.readArgs);
             if (!willRaiseEvent)
-                OnReadCompleted(this.socket, readArgs);
+                this.OnReadCompleted(this.socket, this.readArgs);
         }
 
         /// <summary>
@@ -282,17 +282,17 @@ namespace Griffin.Networking.Servers
         public void SetWriteBuffer(IBufferSlice bufferSlice)
         {
             if (bufferSlice == null) throw new ArgumentNullException("bufferSlice");
-            writer.SetBuffer(bufferSlice);
+            this.writer.SetBuffer(bufferSlice);
         }
 
         public void Dispose()
         {
-            readArgs.Dispose();
-            readStream.Dispose();
-            if (client != null)
-                client.Dispose();
-            if (socket != null)
-                socket.Dispose();
+            this.readArgs.Dispose();
+            this.readStream.Dispose();
+            if (this.client != null)
+                this.client.Dispose();
+            if (this.socket != null)
+                this.socket.Dispose();
         }
     }
 }

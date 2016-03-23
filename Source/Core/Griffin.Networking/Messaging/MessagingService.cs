@@ -28,7 +28,7 @@ namespace Griffin.Networking.Messaging
         /// <param name="context">Context</param>
         void INetworkService.Assign(IServerClientContext context)
         {
-            Context = (MessagingClientContext) context;
+            this.Context = (MessagingClientContext) context;
         }
 
         /// <summary>

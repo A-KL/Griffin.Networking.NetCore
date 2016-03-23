@@ -25,10 +25,10 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             if (reason == null) throw new ArgumentNullException("reason");
             if (code <= 0) throw new ArgumentOutOfRangeException("code", code, "There are no HTTP codes which are 0 or negative.");
 
-            ProtocolVersion = httpVersion;
-            StatusCode = code;
-            StatusDescription = reason;
-            KeepAlive = httpVersion.Contains("1.1");
+            this.ProtocolVersion = httpVersion;
+            this.StatusCode = code;
+            this.StatusDescription = reason;
+            this.KeepAlive = httpVersion.Contains("1.1");
         }
 
         /// <summary>
@@ -53,13 +53,13 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             get
             {
-                var header = Headers["Connection"];
-                return header != null && Headers["Connection"].Is("Keep-Alive");
+                var header = this.Headers["Connection"];
+                return header != null && this.Headers["Connection"].Is("Keep-Alive");
             }
             set
             {
                 var ourValue = value ? "Keep-Alive" : "Close";
-                AddHeader("Connection", ourValue);
+                this.AddHeader("Connection", ourValue);
             }
         }
 
@@ -68,7 +68,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public IHttpCookieCollection<IResponseCookie> Cookies
         {
-            get { return cookies; }
+            get { return this.cookies; }
         }
 
         /// <summary>
@@ -100,8 +100,8 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             if (uri == null) throw new ArgumentNullException("uri");
 
-            AddHeader("Location", uri);
-            StatusCode = (int) HttpStatusCode.Redirect;
+            this.AddHeader("Location", uri);
+            this.StatusCode = (int) HttpStatusCode.Redirect;
         }
 
         #endregion

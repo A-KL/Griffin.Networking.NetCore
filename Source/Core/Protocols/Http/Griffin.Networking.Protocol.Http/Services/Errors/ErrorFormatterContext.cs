@@ -16,9 +16,9 @@ namespace Griffin.Networking.Protocol.Http.Services.Errors
         /// <param name="response">The response.</param>
         public ErrorFormatterContext(Exception exception, IRequest request, IResponse response)
         {
-            Exception = exception;
-            Request = request;
-            Response = response;
+            this.Exception = exception;
+            this.Request = request;
+            this.Response = response;
         }
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace Griffin.Networking.Messaging
         {
             if (formatterFactory == null) throw new ArgumentNullException("formatterFactory");
             this.formatterFactory = formatterFactory;
-            messageBuilder = this.formatterFactory.CreateBuilder();
+            this.messageBuilder = this.formatterFactory.CreateBuilder();
         }
 
         /// <summary>
@@ -32,12 +32,12 @@ namespace Griffin.Networking.Messaging
         /// <param name="bytesRead">The bytes read.</param>
         protected override void HandleRead(IBufferSlice slice, int bytesRead)
         {
-            if (messageBuilder.Append(new SliceStream(slice, bytesRead)))
+            if (this.messageBuilder.Append(new SliceStream(slice, bytesRead)))
             {
                 object message;
-                while (messageBuilder.TryDequeue(out message))
+                while (this.messageBuilder.TryDequeue(out message))
                 {
-                    TriggerClientReceive(message);
+                    this.TriggerClientReceive(message);
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace Griffin.Networking.Messaging
         /// <remarks>will reset the message builder.</remarks>
         public override void Reset()
         {
-            messageBuilder.Reset();
+            this.messageBuilder.Reset();
             base.Reset();
         }
 
@@ -58,12 +58,12 @@ namespace Griffin.Networking.Messaging
         /// <param name="message"></param>
         public virtual void Write(object message)
         {
-            var formatter = formatterFactory.CreateSerializer();
+            var formatter = this.formatterFactory.CreateSerializer();
             var buffer = new BufferSlice(65535);
             var writer = new SliceStream(buffer);
             formatter.Serialize(message, writer);
             writer.Position = 0;
-            Send(buffer, (int) writer.Length);
+            this.Send(buffer, (int) writer.Length);
         }
     }
 }

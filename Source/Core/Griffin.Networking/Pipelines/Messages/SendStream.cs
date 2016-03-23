@@ -19,7 +19,7 @@ namespace Griffin.Networking.Pipelines.Messages
         {
             if (stream == null) throw new ArgumentNullException("stream");
 
-            Stream = stream;
+            this.Stream = stream;
         }
 
         /// <summary>

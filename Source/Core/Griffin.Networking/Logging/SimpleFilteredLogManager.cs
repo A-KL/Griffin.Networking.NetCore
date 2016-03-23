@@ -31,7 +31,7 @@ namespace Griffin.Networking.Logging
 
             var param = Expression.Parameter(typeof(Type), "type");
             var lambda = Expression.Lambda<Func<Type, T>>(Expression.New(constructor, param), param);
-            factoryMethod = lambda.Compile();
+            this.factoryMethod = lambda.Compile();
         }
 
         /// <summary>
@@ -43,8 +43,8 @@ namespace Griffin.Networking.Logging
         /// </returns>
         protected override ILogger GetLoggerInternal(Type loggingType)
         {
-            var innerLogger = factoryMethod(loggingType);
-            return new FilteredLogger(minimumLevel, loggingType, innerLogger);
+            var innerLogger = this.factoryMethod(loggingType);
+            return new FilteredLogger(this.minimumLevel, loggingType, innerLogger);
         }
     }
 }

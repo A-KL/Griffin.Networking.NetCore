@@ -38,17 +38,17 @@ namespace Griffin.Networking.Pipelines
         {
             var pipeline = new Pipeline();
 
-            foreach (var handler in uptreamHandlers)
+            foreach (var handler in this.uptreamHandlers)
             {
                 if (handler.HandlerType != null)
-                    pipeline.AddUpstreamHandler((IUpstreamHandler) serviceLocator.Resolve(handler.HandlerType));
+                    pipeline.AddUpstreamHandler((IUpstreamHandler) this.serviceLocator.Resolve(handler.HandlerType));
                 else
                     pipeline.AddUpstreamHandler(handler.Handler);
             }
-            foreach (var handler in downstreamHandlers)
+            foreach (var handler in this.downstreamHandlers)
             {
                 if (handler.HandlerType != null)
-                    pipeline.AddDownstreamHandler((IDownstreamHandler) serviceLocator.Resolve(handler.HandlerType));
+                    pipeline.AddDownstreamHandler((IDownstreamHandler) this.serviceLocator.Resolve(handler.HandlerType));
                 else
                     pipeline.AddDownstreamHandler(handler.Handler);
             }
@@ -63,7 +63,7 @@ namespace Griffin.Networking.Pipelines
         /// <typeparam name="T">Handler type. Must implement <see cref="IDownstreamHandler"/> or <see cref="IUpstreamHandler"/></typeparam>
         public void AddDownstreamHandler<T>() where T : IPipelineHandler
         {
-            downstreamHandlers.AddLast(new HandlerInformation<IDownstreamHandler>(typeof (T)));
+            this.downstreamHandlers.AddLast(new HandlerInformation<IDownstreamHandler>(typeof (T)));
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Griffin.Networking.Pipelines
         /// <remarks>Same instance will be used for all channels. Use the <see cref="IPipelineHandlerContext"/> to store any context information.</remarks>
         public void AddDownstreamHandler(IDownstreamHandler handler)
         {
-            downstreamHandlers.AddLast(new HandlerInformation<IDownstreamHandler>(handler));
+            this.downstreamHandlers.AddLast(new HandlerInformation<IDownstreamHandler>(handler));
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Griffin.Networking.Pipelines
         /// <typeparam name="T">Handler type. Must implement <see cref="IDownstreamHandler"/> or <see cref="IUpstreamHandler"/></typeparam>
         public void AddUpstreamHandler<T>() where T : IPipelineHandler
         {
-            uptreamHandlers.AddLast(new HandlerInformation<IUpstreamHandler>(typeof (T)));
+            this.uptreamHandlers.AddLast(new HandlerInformation<IUpstreamHandler>(typeof (T)));
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Griffin.Networking.Pipelines
         /// <remarks>Same instance will be used for all channels. Use the <see cref="IPipelineHandlerContext"/> to store any context information.</remarks>
         public void AddUpstreamHandler(IUpstreamHandler handler)
         {
-            uptreamHandlers.AddLast(new HandlerInformation<IUpstreamHandler>(handler));
+            this.uptreamHandlers.AddLast(new HandlerInformation<IUpstreamHandler>(handler));
         }
 
         #region Nested type: HandlerInformation
@@ -101,12 +101,12 @@ namespace Griffin.Networking.Pipelines
         {
             public HandlerInformation(Type handlerType)
             {
-                HandlerType = handlerType;
+                this.HandlerType = handlerType;
             }
 
             public HandlerInformation(T handler)
             {
-                Handler = handler;
+                this.Handler = handler;
             }
 
             public T Handler { get; private set; }

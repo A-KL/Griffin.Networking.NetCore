@@ -52,10 +52,10 @@ namespace Griffin.Networking.Logging
         /// <param name="exception">The exception (or null).</param>
         public override void Write(LogLevel logLevel, string msg, Exception exception)
         {
-            if (logLevel < minLevel)
+            if (logLevel < this.minLevel)
                 return;
 
-            innerLogger.Write(logLevel, msg, exception);
+            this.innerLogger.Write(logLevel, msg, exception);
         }
     }
 }

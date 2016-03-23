@@ -14,8 +14,8 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication
         /// <param name="user">The user.</param>
         public PrincipalFactoryContext(IRequest request, IAuthenticationUser user)
         {
-            User = user;
-            Request = request;
+            this.User = user;
+            this.Request = request;
         }
 
         /// <summary>

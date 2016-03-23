@@ -23,7 +23,7 @@ namespace Griffin.Networking.Pipelines.Messages
         /// </summary>
         public Exception Exception
         {
-            get { return exception; }
+            get { return this.exception; }
         }
     }
 }

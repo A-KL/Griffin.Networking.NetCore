@@ -17,8 +17,8 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Messages
         public SendHttpResponse(IRequest request, IResponse response)
         {
             if (response == null) throw new ArgumentNullException("response");
-            Request = request;
-            Response = response;
+            this.Request = request;
+            this.Response = response;
         }
 
         /// <summary>

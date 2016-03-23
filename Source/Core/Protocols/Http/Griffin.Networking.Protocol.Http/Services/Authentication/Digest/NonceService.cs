@@ -19,7 +19,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         /// </summary>
         public NonceService()
         {
-            timer = new Timer(Sweep, null, expiresTimeout, expiresTimeout);
+            this.timer = new Timer(this.Sweep, null, this.expiresTimeout, this.expiresTimeout);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         public NonceService(TimeSpan expiresTimeout)
         {
             this.expiresTimeout = expiresTimeout;
-            timer = new Timer(Sweep, null, this.expiresTimeout, this.expiresTimeout);
+            this.timer = new Timer(this.Sweep, null, this.expiresTimeout, this.expiresTimeout);
         }
 
         #region IDisposable Members
@@ -40,11 +40,11 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            if (timer == null)
+            if (this.timer == null)
                 return;
 
-            timer.Dispose();
-            timer = null;
+            this.timer.Dispose();
+            this.timer = null;
         }
 
         #endregion
@@ -58,7 +58,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         public virtual bool IsValid(string value, int counter)
         {
             Nonce nonce;
-            if (!items.TryGetValue(value, out nonce))
+            if (!this.items.TryGetValue(value, out nonce))
                 return false;
 
             if (!nonce.Validate(counter))
@@ -75,7 +75,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         public string CreateNonce()
         {
             var nonce = Guid.NewGuid().ToString("N");
-            items.AddOrUpdate(nonce, new Nonce(DateTime.Now.Add(expiresTimeout)), (x, y) => null);
+            this.items.AddOrUpdate(nonce, new Nonce(DateTime.Now.Add(this.expiresTimeout)), (x, y) => null);
             return nonce;
         }
 
@@ -85,13 +85,13 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication.Digest
         /// <param name="state"></param>
         private void Sweep(object state)
         {
-            items.Where(kvp => (DateTime.Now - kvp.Value.LastUpdate) > expiresTimeout)
+            this.items.Where(kvp => (DateTime.Now - kvp.Value.LastUpdate) > this.expiresTimeout)
                 .Select(kvp => kvp.Key)
                 .ToList()
                 .ForEach(key =>
                     {
                         Nonce item;
-                        items.TryRemove(key, out item);
+                        this.items.TryRemove(key, out item);
                     });
         }
     }

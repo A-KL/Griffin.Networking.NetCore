@@ -26,7 +26,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public HttpHeaderParser()
         {
-            parserMethod = FirstLine;
+            this.parserMethod = this.FirstLine;
         }
 
         /// <summary>
@@ -38,25 +38,25 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public void Parse(IBufferReader reader)
         {
             var theByte = 0;
-            while ((theByte = Read(reader)) != -1)
+            while ((theByte = this.Read(reader)) != -1)
             {
                 var ch = (char) theByte;
-                logger.Trace(parserMethod.GetMethodInfo().Name + ": " + ch);
-                parserMethod(ch);
-                if (isCompleted)
+                this.logger.Trace(this.parserMethod.GetMethodInfo().Name + ": " + ch);
+                this.parserMethod(ch);
+                if (this.isCompleted)
                     break;
 
             }
 
-            isCompleted = false;
+            this.isCompleted = false;
         }
 
         private int Read(IBufferReader reader)
         {
-            if (lookAhead != char.MinValue)
+            if (this.lookAhead != char.MinValue)
             {
-                var tmp = lookAhead;
-                lookAhead = char.MinValue;
+                var tmp = this.lookAhead;
+                this.lookAhead = char.MinValue;
                 return tmp;
             }
 
@@ -69,59 +69,59 @@ namespace Griffin.Networking.Protocol.Http.Implementation
                 return;
             if (ch == '\n')
             {
-                var line = headerName.ToString().Split(' ');
+                var line = this.headerName.ToString().Split(' ');
                 if (line.Length != 3)
-                    throw new BadRequestException("First line is not a valid REQUEST/RESPONSE line: " + headerName);
+                    throw new BadRequestException("First line is not a valid REQUEST/RESPONSE line: " + this.headerName);
 
                 if (line[2].ToLower().StartsWith("http"))
-                    RequestLineParsed(this, new RequestLineEventArgs(line[0], line[1], line[2]));
+                    this.RequestLineParsed(this, new RequestLineEventArgs(line[0], line[1], line[2]));
                 else
                 {
                     throw new NotSupportedException("Not supporting response parsing yet.");
                 }
 
-                headerName.Clear();
-                parserMethod = Name_StripWhiteSpacesBefore;
+                this.headerName.Clear();
+                this.parserMethod = this.Name_StripWhiteSpacesBefore;
                 return;
             }
 
-            headerName.Append(ch);
+            this.headerName.Append(ch);
         }
 
         private void Name_StripWhiteSpacesBefore(char ch)
         {
-            if (IsHorizontalWhitespace(ch))
+            if (this.IsHorizontalWhitespace(ch))
                 return;
 
-            parserMethod = Name_ParseUntilComma;
-            lookAhead = ch;
+            this.parserMethod = this.Name_ParseUntilComma;
+            this.lookAhead = ch;
         }
 
         private void Name_ParseUntilComma(char ch)
         {
             if (ch == ':')
             {
-                parserMethod = Value_StripWhitespacesBefore;
+                this.parserMethod = this.Value_StripWhitespacesBefore;
                 return;
             }
 
-            headerName.Append(ch);
+            this.headerName.Append(ch);
         }
 
         private void Value_StripWhitespacesBefore(char ch)
         {
-            if (IsHorizontalWhitespace(ch))
+            if (this.IsHorizontalWhitespace(ch))
                 return;
 
-            parserMethod = Value_ParseUntilQouteOrNewLine;
-            lookAhead = ch;
+            this.parserMethod = this.Value_ParseUntilQouteOrNewLine;
+            this.lookAhead = ch;
         }
 
         private void Value_ParseUntilQouteOrNewLine(char ch)
         {
             if (ch == '"')
             {
-                parserMethod = Value_ParseQuoted;
+                this.parserMethod = this.Value_ParseQuoted;
                 return;
             }
 
@@ -129,11 +129,11 @@ namespace Griffin.Networking.Protocol.Http.Implementation
                 return;
             if (ch == '\n')
             {
-                parserMethod = Value_CompletedOrMultiLine;
+                this.parserMethod = this.Value_CompletedOrMultiLine;
                 return;
             }
 
-            headerValue.Append(ch);
+            this.headerValue.Append(ch);
         }
 
         private void Value_ParseQuoted(char ch)
@@ -141,44 +141,44 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             if (ch == '"')
             {
                 // exited the quouted string
-                parserMethod = Value_ParseUntilQouteOrNewLine;
+                this.parserMethod = this.Value_ParseUntilQouteOrNewLine;
                 return;
             }
 
-            headerValue.Append(ch);
+            this.headerValue.Append(ch);
         }
 
         private void Value_CompletedOrMultiLine(char ch)
         {
-            if (IsHorizontalWhitespace(ch))
+            if (this.IsHorizontalWhitespace(ch))
             {
-                parserMethod = Value_StripWhitespacesBefore;
+                this.parserMethod = this.Value_StripWhitespacesBefore;
                 return;
             }
             if (ch == '\r')
                 return; //empty line
 
-            args.Set(headerName.ToString(), headerValue.ToString());
-            HeaderParsed(this, args);
-            ResetLineParsing();
-            parserMethod = Name_StripWhiteSpacesBefore;
+            this.args.Set(this.headerName.ToString(), this.headerValue.ToString());
+            this.HeaderParsed(this, this.args);
+            this.ResetLineParsing();
+            this.parserMethod = this.Name_StripWhiteSpacesBefore;
 
             if (ch == '\n')
             {
                 //Header completed
-                TriggerHeaderCompleted();
+                this.TriggerHeaderCompleted();
                 return;
             }
 
 
-            lookAhead = ch;
+            this.lookAhead = ch;
         }
 
         private void TriggerHeaderCompleted()
         {
-            isCompleted = true;
-            Completed(this, EventArgs.Empty);
-            Reset();
+            this.isCompleted = true;
+            this.Completed(this, EventArgs.Empty);
+            this.Reset();
         }
 
         /// <summary>
@@ -206,14 +206,14 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public void Reset()
         {
-            ResetLineParsing();
-            parserMethod = FirstLine;
+            this.ResetLineParsing();
+            this.parserMethod = this.FirstLine;
         }
 
         protected void ResetLineParsing()
         {
-            headerName.Clear();
-            headerValue.Clear();
+            this.headerName.Clear();
+            this.headerValue.Clear();
         }
 
 

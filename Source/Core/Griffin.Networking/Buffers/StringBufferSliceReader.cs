@@ -20,7 +20,7 @@ namespace Griffin.Networking.Buffers
         /// <remarks>You must use <see cref="Assign(IBufferSlice,int)"/> if you use this constructor<para>Initialied using ASCII as encoding.</para></remarks>
         public StringBufferSliceReader()
         {
-            encoding = Encoding.ASCII;
+            this.encoding = Encoding.ASCII;
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace Griffin.Networking.Buffers
         public StringBufferSliceReader(IBufferSlice slice, int count)
         {
             if (slice == null) throw new ArgumentNullException("slice");
-            reader = slice;
-            length = count;
-            encoding = Encoding.ASCII;
+            this.reader = slice;
+            this.length = count;
+            this.encoding = Encoding.ASCII;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Griffin.Networking.Buffers
         /// </summary>
         public byte[] Buffer
         {
-            get { return reader.Buffer; }
+            get { return this.reader.Buffer; }
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Griffin.Networking.Buffers
         /// <value></value>
         public bool EndOfFile
         {
-            get { return position == length; }
+            get { return this.position == this.length; }
         }
 
         #region IStringBufferReader Members
@@ -70,7 +70,7 @@ namespace Griffin.Networking.Buffers
         /// <value><see cref="char.MinValue"/> if end of buffer.</value>
         public char Current
         {
-            get { return HasMore ? (char) reader.Buffer[position] : char.MinValue; }
+            get { return this.HasMore ? (char) this.reader.Buffer[this.position] : char.MinValue; }
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Griffin.Networking.Buffers
         /// <value></value>
         public bool HasMore
         {
-            get { return position < Length; }
+            get { return this.position < this.Length; }
         }
 
         /// <summary>
@@ -91,8 +91,8 @@ namespace Griffin.Networking.Buffers
         /// </remarks>
         public int Index
         {
-            get { return position; }
-            set { position = value; }
+            get { return this.position; }
+            set { this.position = value; }
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Griffin.Networking.Buffers
         /// <value></value>
         public int Length
         {
-            get { return length; }
+            get { return this.length; }
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Griffin.Networking.Buffers
         /// <value><see cref="char.MinValue"/> if end of buffer.</value>
         public char Peek
         {
-            get { return HasMore ? (char) reader.Buffer[Index + 1] : char.MinValue; }
+            get { return this.HasMore ? (char) this.reader.Buffer[this.Index + 1] : char.MinValue; }
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace Griffin.Networking.Buffers
         /// </summary>
         public int RemainingLength
         {
-            get { return length - position; }
+            get { return this.length - this.position; }
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Griffin.Networking.Buffers
         /// </summary>
         public void Consume()
         {
-            ++Index;
+            ++this.Index;
         }
 
         /// <summary>
@@ -135,8 +135,8 @@ namespace Griffin.Networking.Buffers
         /// <param name="chars">One or more characters.</param>
         public void Consume(params char[] chars)
         {
-            while (HasMore && chars.Contains(Current))
-                ++Index;
+            while (this.HasMore && chars.Contains(this.Current))
+                ++this.Index;
         }
 
         /// <summary>
@@ -146,28 +146,28 @@ namespace Griffin.Networking.Buffers
         /// <returns>New offset.</returns>
         public int ConsumeUntil(char delimiter)
         {
-            if (EndOfFile)
-                return Index;
+            if (this.EndOfFile)
+                return this.Index;
 
-            var startIndex = Index;
+            var startIndex = this.Index;
 
             while (true)
             {
-                if (EndOfFile)
+                if (this.EndOfFile)
                 {
-                    Index = startIndex;
-                    return Index;
+                    this.Index = startIndex;
+                    return this.Index;
                 }
 
-                if (Current == delimiter)
-                    return Index;
+                if (this.Current == delimiter)
+                    return this.Index;
 
                 // Delimiter is not new line and we got one.
-                if (delimiter != '\r' && delimiter != '\n' && Current == '\r' || Current == '\n')
-                    throw new InvalidOperationException("Unexpected new line: " + GetString(startIndex, Index) +
+                if (delimiter != '\r' && delimiter != '\n' && this.Current == '\r' || this.Current == '\n')
+                    throw new InvalidOperationException("Unexpected new line: " + this.GetString(startIndex, this.Index) +
                                                         "[CRLF].");
 
-                ++Index;
+                ++this.Index;
             }
         }
 
@@ -176,7 +176,7 @@ namespace Griffin.Networking.Buffers
         /// </summary>
         public void ConsumeWhiteSpaces()
         {
-            Consume(' ', '\t');
+            this.Consume(' ', '\t');
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Griffin.Networking.Buffers
         /// <param name="extraCharacter">Extra character to consume</param>
         public void ConsumeWhiteSpaces(char extraCharacter)
         {
-            Consume(' ', '\t', extraCharacter);
+            this.Consume(' ', '\t', extraCharacter);
         }
 
         /// <summary>
@@ -197,11 +197,11 @@ namespace Griffin.Networking.Buffers
         /// </returns>
         public bool Contains(char ch)
         {
-            var index = Index;
-            while (Current != ch && HasMore)
-                ++Index;
-            var found = Current == ch;
-            Index = index;
+            var index = this.Index;
+            while (this.Current != ch && this.HasMore)
+                ++this.Index;
+            var found = this.Current == ch;
+            this.Index = index;
             return found;
         }
 
@@ -213,7 +213,7 @@ namespace Griffin.Networking.Buffers
         /// </returns>
         public char Read()
         {
-            return (char) reader.Buffer[Index++];
+            return (char) this.reader.Buffer[this.Index++];
         }
 
         /// <summary>
@@ -223,36 +223,36 @@ namespace Griffin.Networking.Buffers
         /// <remarks>Will merge multi line headers and rewind of end of line was not found.</remarks> 
         public string ReadLine()
         {
-            var startIndex = Index;
-            while (HasMore && Current != '\n' && Current != '\r')
-                Consume();
+            var startIndex = this.Index;
+            while (this.HasMore && this.Current != '\n' && this.Current != '\r')
+                this.Consume();
 
 
             // EOF? Then we havent enough bytes.
-            if (EndOfFile)
+            if (this.EndOfFile)
             {
-                Index = startIndex;
+                this.Index = startIndex;
                 return null;
             }
 
-            var thisLine = encoding.GetString(reader.Buffer, startIndex, Index - startIndex);
+            var thisLine = this.encoding.GetString(this.reader.Buffer, startIndex, this.Index - startIndex);
 
             // \r\n
-            if (Current == '\r')
-                Consume();
-            if (Current == '\n')
-                Consume();
+            if (this.Current == '\r')
+                this.Consume();
+            if (this.Current == '\n')
+                this.Consume();
 
             // Multi line message?
-            if (Current == '\t' || Current == ' ')
+            if (this.Current == '\t' || this.Current == ' ')
             {
-                Consume();
-                var extra = ReadLine();
+                this.Consume();
+                var extra = this.ReadLine();
 
                 // Multiline isn't complete, wait for more bytes.
                 if (extra == null)
                 {
-                    Index = startIndex;
+                    this.Index = startIndex;
                     return null;
                 }
 
@@ -268,34 +268,34 @@ namespace Griffin.Networking.Buffers
         /// <returns>string if current character (in buffer) is a quote; otherwise <c>null</c>.</returns>
         public string ReadQuotedString()
         {
-            if (Current != '\"')
+            if (this.Current != '\"')
                 return null;
 
-            Consume();
-            var startPos = Index;
-            while (HasMore)
+            this.Consume();
+            var startPos = this.Index;
+            while (this.HasMore)
             {
-                switch (Current)
+                switch (this.Current)
                 {
                     case '\\':
-                        if (Peek == '"') // escaped quote
+                        if (this.Peek == '"') // escaped quote
                         {
-                            Consume();
-                            Consume();
+                            this.Consume();
+                            this.Consume();
                             continue;
                         }
                         break;
                     case '"':
-                        var value = encoding.GetString(reader.Buffer, startPos, Index - startPos);
-                        ++Index; // skip qoute
+                        var value = this.encoding.GetString(this.reader.Buffer, startPos, this.Index - startPos);
+                        ++this.Index; // skip qoute
                         return value;
                     default:
-                        Consume();
+                        this.Consume();
                         break;
                 }
             }
 
-            Index = startPos;
+            this.Index = startPos;
             return null;
         }
 
@@ -312,26 +312,26 @@ namespace Griffin.Networking.Buffers
         /// <exception cref="InvalidOperationException"><c>InvalidOperationException</c>.</exception>
         public string ReadToEnd(string delimiters)
         {
-            if (EndOfFile)
+            if (this.EndOfFile)
                 return string.Empty;
 
-            var startIndex = Index;
+            var startIndex = this.Index;
 
             var isDelimitersNewLine = delimiters.IndexOfAny(new[] {'\r', '\n'}) != -1;
             while (true)
             {
-                if (EndOfFile)
-                    return GetString(startIndex, Index);
+                if (this.EndOfFile)
+                    return this.GetString(startIndex, this.Index);
 
-                if (delimiters.IndexOf(Current) != -1)
-                    return GetString(startIndex, Index, true);
+                if (delimiters.IndexOf(this.Current) != -1)
+                    return this.GetString(startIndex, this.Index, true);
 
                 // Delimiter is not new line and we got one.
-                if (isDelimitersNewLine && Current == '\r' || Current == '\n')
-                    throw new InvalidOperationException("Unexpected new line: " + GetString(startIndex, Index) +
+                if (isDelimitersNewLine && this.Current == '\r' || this.Current == '\n')
+                    throw new InvalidOperationException("Unexpected new line: " + this.GetString(startIndex, this.Index) +
                                                         "[CRLF].");
 
-                ++Index;
+                ++this.Index;
             }
         }
 
@@ -344,8 +344,8 @@ namespace Griffin.Networking.Buffers
         /// </remarks>
         public string ReadToEnd()
         {
-            var str = encoding.GetString(reader.Buffer, Index, RemainingLength);
-            Index = position;
+            var str = this.encoding.GetString(this.reader.Buffer, this.Index, this.RemainingLength);
+            this.Index = this.position;
             return str;
         }
 
@@ -362,25 +362,25 @@ namespace Griffin.Networking.Buffers
         /// <exception cref="InvalidOperationException"><c>InvalidOperationException</c>.</exception>
         public string ReadToEnd(char delimiter)
         {
-            if (EndOfFile)
+            if (this.EndOfFile)
                 return string.Empty;
 
-            var startIndex = Index;
+            var startIndex = this.Index;
 
             while (true)
             {
-                if (EndOfFile)
-                    return GetString(startIndex, Index);
+                if (this.EndOfFile)
+                    return this.GetString(startIndex, this.Index);
 
-                if (Current == delimiter)
-                    return GetString(startIndex, Index, true);
+                if (this.Current == delimiter)
+                    return this.GetString(startIndex, this.Index, true);
 
                 // Delimiter is not new line and we got one.
-                if (delimiter != '\r' && delimiter != '\n' && Current == '\r' || Current == '\n')
-                    throw new InvalidOperationException("Unexpected new line: " + GetString(startIndex, Index) +
+                if (delimiter != '\r' && delimiter != '\n' && this.Current == '\r' || this.Current == '\n')
+                    throw new InvalidOperationException("Unexpected new line: " + this.GetString(startIndex, this.Index) +
                                                         "[CRLF].");
 
-                ++Index;
+                ++this.Index;
             }
         }
 
@@ -396,28 +396,28 @@ namespace Griffin.Networking.Buffers
         /// <exception cref="InvalidOperationException"><c>InvalidOperationException</c>.</exception>
         public string ReadUntil(char delimiter)
         {
-            if (EndOfFile)
+            if (this.EndOfFile)
                 return null;
 
-            var startIndex = Index;
+            var startIndex = this.Index;
 
             while (true)
             {
-                if (EndOfFile)
+                if (this.EndOfFile)
                 {
-                    Index = startIndex;
+                    this.Index = startIndex;
                     return null;
                 }
 
-                if (Current == delimiter)
-                    return GetString(startIndex, Index, true);
+                if (this.Current == delimiter)
+                    return this.GetString(startIndex, this.Index, true);
 
                 // Delimiter is not new line and we got one.
-                if (delimiter != '\r' && delimiter != '\n' && Current == '\r' || Current == '\n')
-                    throw new InvalidOperationException("Unexpected new line: " + GetString(startIndex, Index) +
+                if (delimiter != '\r' && delimiter != '\n' && this.Current == '\r' || this.Current == '\n')
+                    throw new InvalidOperationException("Unexpected new line: " + this.GetString(startIndex, this.Index) +
                                                         "[CRLF].");
 
-                ++Index;
+                ++this.Index;
             }
         }
 
@@ -434,29 +434,29 @@ namespace Griffin.Networking.Buffers
         /// <exception cref="InvalidOperationException"><c>InvalidOperationException</c>.</exception>
         public string ReadUntil(string delimiters)
         {
-            if (EndOfFile)
+            if (this.EndOfFile)
                 return null;
 
-            var startIndex = Index;
+            var startIndex = this.Index;
 
             var isDelimitersNewLine = delimiters.IndexOfAny(new[] {'\r', '\n'}) != -1;
             while (true)
             {
-                if (EndOfFile)
+                if (this.EndOfFile)
                 {
-                    Index = startIndex;
+                    this.Index = startIndex;
                     return null;
                 }
 
-                if (delimiters.IndexOf(Current) != -1)
-                    return GetString(startIndex, Index, true);
+                if (delimiters.IndexOf(this.Current) != -1)
+                    return this.GetString(startIndex, this.Index, true);
 
                 // Delimiter is not new line and we got one.
-                if (isDelimitersNewLine && Current == '\r' || Current == '\n')
-                    throw new InvalidOperationException("Unexpected new line: " + GetString(startIndex, Index) +
+                if (isDelimitersNewLine && this.Current == '\r' || this.Current == '\n')
+                    throw new InvalidOperationException("Unexpected new line: " + this.GetString(startIndex, this.Index) +
                                                         "[CRLF].");
 
-                ++Index;
+                ++this.Index;
             }
         }
 
@@ -466,7 +466,7 @@ namespace Griffin.Networking.Buffers
         /// <returns>A string if a white space was found; otherwise <c>null</c>.</returns>
         public string ReadWord()
         {
-            return ReadUntil(" \t");
+            return this.ReadUntil(" \t");
         }
 
         /// <summary>
@@ -476,7 +476,7 @@ namespace Griffin.Networking.Buffers
         /// <param name="count"> </param>
         public void Assign(IBufferSlice buffer, int count)
         {
-            reader = buffer;
+            this.reader = buffer;
         }
 
         #endregion
@@ -490,12 +490,12 @@ namespace Griffin.Networking.Buffers
         /// <exception cref="ArgumentException">Buffer needs to be a byte array</exception>
         public void Assign(byte[] buffer, int offset, int count)
         {
-            reader = new BufferSlice(buffer, offset, count);
+            this.reader = new BufferSlice(buffer, offset, count);
         }
 
         private string GetString(int startIndex, int endIndex)
         {
-            return encoding.GetString(reader.Buffer, startIndex, endIndex - startIndex);
+            return this.encoding.GetString(this.reader.Buffer, startIndex, endIndex - startIndex);
         }
 
         private string GetString(int startIndex, int endIndex, bool trimEnd)
@@ -503,11 +503,11 @@ namespace Griffin.Networking.Buffers
             if (trimEnd)
             {
                 --endIndex; // need to move one back to be able to trim.
-                while (endIndex > 0 && reader.Buffer[endIndex] == ' ' || reader.Buffer[endIndex] == '\t')
+                while (endIndex > 0 && this.reader.Buffer[endIndex] == ' ' || this.reader.Buffer[endIndex] == '\t')
                     --endIndex;
                 ++endIndex;
             }
-            return encoding.GetString(reader.Buffer, startIndex, endIndex - startIndex);
+            return this.encoding.GetString(this.reader.Buffer, startIndex, endIndex - startIndex);
         }
     }
 }

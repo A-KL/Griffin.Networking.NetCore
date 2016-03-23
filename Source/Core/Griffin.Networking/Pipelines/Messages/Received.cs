@@ -17,8 +17,8 @@ namespace Griffin.Networking.Pipelines.Messages
         /// <param name="reader">Buffer reader.</param>
         public Received(EndPoint remoteEndPoint, IBufferReader reader)
         {
-            RemoteEndPoint = remoteEndPoint;
-            BufferReader = reader;
+            this.RemoteEndPoint = remoteEndPoint;
+            this.BufferReader = reader;
         }
 
         /// <summary>

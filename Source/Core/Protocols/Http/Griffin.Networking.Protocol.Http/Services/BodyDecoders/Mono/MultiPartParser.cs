@@ -39,11 +39,11 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
         public HttpMultipart(Stream data, string b, Encoding encoding)
         {
             this.data = data;
-            boundary = b;
-            boundaryBytes = encoding.GetBytes(b);
-            buffer = new byte[boundaryBytes.Length + 2]; // CRLF or '--'
+            this.boundary = b;
+            this.boundaryBytes = encoding.GetBytes(b);
+            this.buffer = new byte[this.boundaryBytes.Length + 2]; // CRLF or '--'
             this.encoding = encoding;
-            sb = new StringBuilder();
+            this.sb = new StringBuilder();
         }
 
         private bool CompareBytes(byte[] orig, byte[] other)
@@ -86,7 +86,7 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
             for (var i = temp.Length - 1; i >= 0; i--)
                 source[i] = (byte) temp[i];
 
-            return encoding.GetString(source);
+            return this.encoding.GetString(source);
         }
 
         private long MoveToNextBoundary()
@@ -95,7 +95,7 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
             var gotCr = false;
 
             var state = 0;
-            var c = data.ReadByte();
+            var c = this.data.ReadByte();
             while (true)
             {
                 if (c == -1)
@@ -103,20 +103,20 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
 
                 if (state == 0 && c == Lf)
                 {
-                    retval = data.Position - 1;
+                    retval = this.data.Position - 1;
                     if (gotCr)
                         retval--;
                     state = 1;
-                    c = data.ReadByte();
+                    c = this.data.ReadByte();
                 }
                 else if (state == 0)
                 {
                     gotCr = (c == Cr);
-                    c = data.ReadByte();
+                    c = this.data.ReadByte();
                 }
                 else if (state == 1 && c == '-')
                 {
-                    c = data.ReadByte();
+                    c = this.data.ReadByte();
                     if (c == -1)
                         return -1;
 
@@ -127,43 +127,43 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
                         continue; // no ReadByte() here
                     }
 
-                    var nread = data.Read(buffer, 0, buffer.Length);
-                    var bl = buffer.Length;
+                    var nread = this.data.Read(this.buffer, 0, this.buffer.Length);
+                    var bl = this.buffer.Length;
                     if (nread != bl)
                         return -1;
 
-                    if (!CompareBytes(boundaryBytes, buffer))
+                    if (!this.CompareBytes(this.boundaryBytes, this.buffer))
                     {
                         state = 0;
-                        data.Position = retval + 2;
+                        this.data.Position = retval + 2;
                         if (gotCr)
                         {
-                            data.Position++;
+                            this.data.Position++;
                             gotCr = false;
                         }
-                        c = data.ReadByte();
+                        c = this.data.ReadByte();
                         continue;
                     }
 
-                    if (buffer[bl - 2] == '-' && buffer[bl - 1] == '-')
+                    if (this.buffer[bl - 2] == '-' && this.buffer[bl - 1] == '-')
                     {
-                        atEof = true;
+                        this.atEof = true;
                     }
-                    else if (buffer[bl - 2] != Cr || buffer[bl - 1] != Lf)
+                    else if (this.buffer[bl - 2] != Cr || this.buffer[bl - 1] != Lf)
                     {
                         state = 0;
-                        data.Position = retval + 2;
+                        this.data.Position = retval + 2;
                         if (gotCr)
                         {
-                            data.Position++;
+                            this.data.Position++;
                             gotCr = false;
                         }
-                        c = data.ReadByte();
+                        c = this.data.ReadByte();
                         continue;
                     }
-                    data.Position = retval + 2;
+                    this.data.Position = retval + 2;
                     if (gotCr)
-                        data.Position++;
+                        this.data.Position++;
                     break;
                 }
                 else
@@ -180,13 +180,13 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
         {
             try
             {
-                var line = ReadLine();
+                var line = this.ReadLine();
                 while (line == "")
-                    line = ReadLine();
+                    line = this.ReadLine();
                 if (line[0] != '-' || line[1] != '-')
                     return false;
 
-                if (!StrUtils.EndsWith(line, boundary, false))
+                if (!StrUtils.EndsWith(line, this.boundary, false))
                     return true;
             }
             catch
@@ -198,7 +198,7 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
 
         private string ReadHeaders()
         {
-            var s = ReadLine();
+            var s = this.ReadLine();
             if (s == "")
                 return null;
 
@@ -210,10 +210,10 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
             // CRLF or LF are ok as line endings.
             var gotCr = false;
             var b = 0;
-            sb.Length = 0;
+            this.sb.Length = 0;
             while (true)
             {
-                b = data.ReadByte();
+                b = this.data.ReadByte();
                 if (b == -1)
                 {
                     return null;
@@ -224,28 +224,28 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
                     break;
                 }
                 gotCr = (b == Cr);
-                sb.Append((char) b);
+                this.sb.Append((char) b);
             }
 
             if (gotCr)
-                sb.Length--;
+                this.sb.Length--;
 
-            return sb.ToString();
+            return this.sb.ToString();
         }
 
         public Element ReadNextElement()
         {
-            if (atEof || ReadBoundary())
+            if (this.atEof || this.ReadBoundary())
                 return null;
 
             var elem = new Element();
             string header;
-            while ((header = ReadHeaders()) != null)
+            while ((header = this.ReadHeaders()) != null)
             {
                 if (StrUtils.StartsWith(header, "Content-Disposition:", true))
                 {
                     elem.Name = GetContentDispositionAttribute(header, "name");
-                    elem.Filename = StripPath(GetContentDispositionAttributeWithEncoding(header, "filename"));
+                    elem.Filename = StripPath(this.GetContentDispositionAttributeWithEncoding(header, "filename"));
                 }
                 else if (StrUtils.StartsWith(header, "Content-Type:", true))
                 {
@@ -253,9 +253,9 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
                 }
             }
 
-            var start = data.Position;
+            var start = this.data.Position;
             elem.Start = start;
-            var pos = MoveToNextBoundary();
+            var pos = this.MoveToNextBoundary();
             if (pos == -1)
                 return null;
 
@@ -285,8 +285,7 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders.Mono
 
             public override string ToString()
             {
-                return "ContentType " + ContentType + ", Name " + Name + ", Filename " + Filename + ", Start " +
-                       Start.ToString() + ", Length " + Length.ToString();
+                return "ContentType " + this.ContentType + ", Name " + this.Name + ", Filename " + this.Filename + ", Start " + this.Start.ToString() + ", Length " + this.Length.ToString();
             }
         }
 

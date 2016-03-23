@@ -27,10 +27,10 @@ namespace Griffin.Networking.Buffers
                 throw new ArgumentOutOfRangeException("bufferSize", bufferSize, "Must be 1 or larger.");
 
             this.numberOfBuffers = numberOfBuffers;
-            buffer = new byte[numberOfBuffers*bufferSize];
+            this.buffer = new byte[numberOfBuffers*bufferSize];
             for (var i = 0; i < numberOfBuffers; i++)
             {
-                slices.Push(new PooledBufferSlice(this, buffer, i*bufferSize, bufferSize));
+                this.slices.Push(new PooledBufferSlice(this, this.buffer, i*bufferSize, bufferSize));
             }
         }
 
@@ -44,10 +44,10 @@ namespace Griffin.Networking.Buffers
         public IBufferSlice Pop()
         {
             PooledBufferSlice slice;
-            if (slices.TryPop(out slice))
+            if (this.slices.TryPop(out slice))
                 return slice;
 
-            throw new InvalidOperationException(string.Format("All {0} has been given out.", numberOfBuffers));
+            throw new InvalidOperationException(string.Format("All {0} has been given out.", this.numberOfBuffers));
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Griffin.Networking.Buffers
                     "We did not give you away, hence we can't take you. Find your real stack.");
 
             mySlice.Reset();
-            slices.Push(mySlice);
+            this.slices.Push(mySlice);
         }
 
         #endregion

@@ -21,9 +21,9 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public Range(int position, int count)
         {
             this.position = position;
-            bytesRemaining = count;
-            Count = count;
-            EndPosition = position + count;
+            this.bytesRemaining = count;
+            this.Count = count;
+            this.EndPosition = position + count;
         }
 
         /// <summary>
@@ -52,24 +52,24 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             // last bytes
             if (parts[0] == "")
             {
-                Count = Parse(parts[1], string.Format("value after the slash ('{0}')", range));
-                position = streamLength - Count;
-                EndPosition = position + Count - 1;
+                this.Count = this.Parse(parts[1], string.Format("value after the slash ('{0}')", range));
+                this.position = streamLength - this.Count;
+                this.EndPosition = this.position + this.Count - 1;
             }
             else if (parts[1] == "")
             {
-                position = Parse(parts[0], string.Format("value before the slash ('{0}')", range));
-                Count = streamLength - position;
-                EndPosition = position + Count - 1;
+                this.position = this.Parse(parts[0], string.Format("value before the slash ('{0}')", range));
+                this.Count = streamLength - this.position;
+                this.EndPosition = this.position + this.Count - 1;
             }
             else
             {
-                position = Parse(parts[0], string.Format("value before the slash ('{0}')", range));
-                EndPosition = Parse(parts[1], string.Format("value after the slash ('{0}')", range));
-                Count = EndPosition - position + 1; // count first and last byte
+                this.position = this.Parse(parts[0], string.Format("value before the slash ('{0}')", range));
+                this.EndPosition = this.Parse(parts[1], string.Format("value after the slash ('{0}')", range));
+                this.Count = this.EndPosition - this.position + 1; // count first and last byte
             }
 
-            bytesRemaining = Count;
+            this.bytesRemaining = this.Count;
         }
 
         private int Parse(string value, string name)
@@ -97,22 +97,22 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             if (source == null) throw new ArgumentNullException("source");
             if (buffer == null) throw new ArgumentNullException("buffer");
             
-            if (firstRead)
+            if (this.firstRead)
             {
-                source.Position = position;
-                firstRead = false;
+                source.Position = this.position;
+                this.firstRead = false;
             }
 
-            var toRead = Math.Min(bytesRemaining, count);
+            var toRead = Math.Min(this.bytesRemaining, count);
             var read = source.Read(buffer, offset, toRead);
-            bytesRemaining -= read;
+            this.bytesRemaining -= read;
             return read;
         }
 
         /// <summary>
         /// Gets value indicating if everything have been read using the <see cref="Read"/> method.
         /// </summary>
-        public bool IsDone { get { return bytesRemaining == 0; } }
+        public bool IsDone { get { return this.bytesRemaining == 0; } }
 
         /// <summary>
         /// Gets number of bytes to read
@@ -127,7 +127,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <summary>
         /// Gets start position
         /// </summary>
-        public int Position { get { return position; } }
+        public int Position { get { return this.position; } }
 
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
@@ -137,7 +137,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </returns>
         public override string ToString()
         {
-            return string.Format("{0}-{1}", position, EndPosition);
+            return string.Format("{0}-{1}", this.position, this.EndPosition);
         }
 
     }

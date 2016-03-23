@@ -18,7 +18,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            File.Delete(TempFileName);
+            File.Delete(this.TempFileName);
         }
 
         #endregion

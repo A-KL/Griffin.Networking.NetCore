@@ -26,9 +26,9 @@ namespace Griffin.Networking.Buffers
                                                           "offset+count can not be larger than the buffer size: {0}",
                                                           buffer.Length));
 
-            Buffer = buffer;
-            Offset = offset;
-            Count = count;
+            this.Buffer = buffer;
+            this.Offset = offset;
+            this.Count = count;
         }
 
         /// <summary>
@@ -38,9 +38,9 @@ namespace Griffin.Networking.Buffers
         /// <remarks>Allocates a new buffer</remarks>
         public BufferSlice(int count)
         {
-            Buffer = new byte[count];
-            Offset = 0;
-            Count = count;
+            this.Buffer = new byte[count];
+            this.Offset = 0;
+            this.Count = count;
         }
 
         #region IBufferSlice Members

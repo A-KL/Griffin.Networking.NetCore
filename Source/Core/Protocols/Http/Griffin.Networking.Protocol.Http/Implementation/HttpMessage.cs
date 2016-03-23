@@ -18,8 +18,8 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public HttpMessage()
         {
-            ContentEncoding = Encoding.UTF8;
-            ProtocolVersion = "HTTP/1.1";
+            this.ContentEncoding = Encoding.UTF8;
+            this.ProtocolVersion = "HTTP/1.1";
         }
 
         #region IMessage Members
@@ -44,11 +44,11 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             get
             {
-                if (contentLength == 0 && Body != null)
-                    return (int) Body.Length;
-                return contentLength;
+                if (this.contentLength == 0 && this.Body != null)
+                    return (int) this.Body.Length;
+                return this.contentLength;
             }
-            set { contentLength = value; }
+            set { this.contentLength = value; }
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public IHeaderCollection Headers
         {
-            get { return headers; }
+            get { return this.headers; }
         }
 
         /// <summary>
@@ -79,9 +79,9 @@ namespace Griffin.Networking.Protocol.Http.Implementation
 
             if (name.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
             {
-                ParseContentEncoding(value);
+                this.ParseContentEncoding(value);
             }
-            headers.Add(name, value);
+            this.headers.Add(name, value);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <param name="value"></param>
         public void SetHeader(string name, string value)
         {
-            headers.Set(name, value);
+            this.headers.Set(name, value);
         }
 
         private void ParseContentEncoding(string value)
@@ -103,7 +103,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
                 var endPos = value.IndexOf(";", pos + 1);
                 var encoding = endPos == -1 ? value.Substring(pos) : value.Substring(pos, endPos - pos);
                 encoding = encoding.ToUpper();
-                ContentEncoding = Encoding.GetEncoding(encoding.ToUpper());
+                this.ContentEncoding = Encoding.GetEncoding(encoding.ToUpper());
             }
         }
 

@@ -23,9 +23,9 @@ namespace Griffin.Networking.Pipelines.Messages
             if (buffer.Length < offset + count)
                 throw new ArgumentException(string.Format("Offset+Count ({0}+{1}) is past end of buffer.", offset, count));
 
-            Buffer = buffer;
-            Offset = offset;
-            Count = count;
+            this.Buffer = buffer;
+            this.Offset = offset;
+            this.Count = count;
         }
 
         /// <summary>

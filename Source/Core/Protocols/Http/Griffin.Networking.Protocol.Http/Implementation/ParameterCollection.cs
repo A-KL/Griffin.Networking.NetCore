@@ -22,7 +22,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <filterpriority>1</filterpriority>
         public IEnumerator<IParameter> GetEnumerator()
         {
-            return items.Values.GetEnumerator();
+            return this.items.Values.GetEnumerator();
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <filterpriority>2</filterpriority>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public int Count
         {
-            get { return items.Count; }
+            get { return this.items.Count; }
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             get
             {
                 IParameter parameter;
-                return items.TryGetValue(name, out parameter) ? parameter.Last() : null;
+                return this.items.TryGetValue(name, out parameter) ? parameter.Last() : null;
             }
         }
 
@@ -67,7 +67,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public IParameter Get(string name)
         {
             IParameter value;
-            return items.TryGetValue(name, out value) ? value : null;
+            return this.items.TryGetValue(name, out value) ? value : null;
         }
 
         /// <summary>
@@ -78,10 +78,10 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public void Add(string name, string value)
         {
             IParameter parameter;
-            if (!items.TryGetValue(name, out parameter))
+            if (!this.items.TryGetValue(name, out parameter))
             {
                 parameter = new Parameter(name, value);
-                items.Add(name, parameter);
+                this.items.Add(name, parameter);
             }
             else
                 parameter.Add(value);
@@ -94,7 +94,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <returns><c>true</c> if found; otherwise <c>false</c>;</returns>
         public bool Exists(string name)
         {
-            return items.ContainsKey(name);
+            return this.items.ContainsKey(name);
         }
 
         #endregion
@@ -104,7 +104,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public void Clear()
         {
-            items.Clear();
+            this.items.Clear();
         }
     }
 }

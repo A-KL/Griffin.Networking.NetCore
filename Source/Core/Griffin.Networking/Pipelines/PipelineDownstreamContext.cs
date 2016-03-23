@@ -20,21 +20,21 @@ namespace Griffin.Networking.Pipelines
 
         public PipelineDownstreamContext NextHandler
         {
-            set { nextHandler = value; }
+            set { this.nextHandler = value; }
         }
 
         #region IPipelineHandlerContext Members
 
         public void SendDownstream(IPipelineMessage message)
         {
-            if (nextHandler != null)
+            if (this.nextHandler != null)
             {
-                logger.Trace("Down: " + myHandler.ToStringOrClassName() + " is passing on message");
-                nextHandler.Invoke(message);
+                this.logger.Trace("Down: " + this.myHandler.ToStringOrClassName() + " is passing on message");
+                this.nextHandler.Invoke(message);
             }
             else
             {
-                logger.Warning("Down: " + myHandler.ToStringOrClassName() +
+                this.logger.Warning("Down: " + this.myHandler.ToStringOrClassName() +
                                 " tried to send message, but there are no more handlers.");
             }
         }
@@ -42,22 +42,22 @@ namespace Griffin.Networking.Pipelines
 
         public void SendUpstream(IPipelineMessage message)
         {
-            logger.Trace("Up: " + myHandler.ToStringOrClassName() + " is sending " + message.ToStringOrClassName());
-            pipeline.SendUpstream(message);
+            this.logger.Trace("Up: " + this.myHandler.ToStringOrClassName() + " is sending " + message.ToStringOrClassName());
+            this.pipeline.SendUpstream(message);
         }
 
         #endregion
 
         public void Invoke(IPipelineMessage message)
         {
-            logger.Trace("Down: Invoking " + myHandler.ToStringOrClassName() + " with msg " +
+            this.logger.Trace("Down: Invoking " + this.myHandler.ToStringOrClassName() + " with msg " +
                           message.ToStringOrClassName());
-            myHandler.HandleDownstream(this, message);
+            this.myHandler.HandleDownstream(this, message);
         }
 
         public override string ToString()
         {
-            return myHandler.ToString();
+            return this.myHandler.ToString();
         }
     }
 }

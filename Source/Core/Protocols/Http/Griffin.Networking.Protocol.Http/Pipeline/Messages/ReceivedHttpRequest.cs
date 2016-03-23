@@ -17,7 +17,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Messages
         public ReceivedHttpRequest(IRequest httpRequest)
         {
             if (httpRequest == null) throw new ArgumentNullException("httpRequest");
-            HttpRequest = httpRequest;
+            this.HttpRequest = httpRequest;
         }
 
         /// <summary>

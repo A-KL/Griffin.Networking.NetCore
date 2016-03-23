@@ -24,7 +24,7 @@ namespace Griffin.Networking.Messaging
         {
             if (formatterFactory == null) throw new ArgumentNullException("formatterFactory");
             this.formatterFactory = formatterFactory;
-            messageBuilder = this.formatterFactory.CreateBuilder();
+            this.messageBuilder = this.formatterFactory.CreateBuilder();
         }
 
         /// <summary>
@@ -35,14 +35,14 @@ namespace Griffin.Networking.Messaging
         /// <remarks>You have to handle all bytes, anything left will be discarded.</remarks>
         protected override void OnReceived(IBufferSlice buffer, int bytesRead)
         {
-            var gotMessage = messageBuilder.Append(new SliceStream(buffer, bytesRead));
+            var gotMessage = this.messageBuilder.Append(new SliceStream(buffer, bytesRead));
 
             if (gotMessage)
             {
                 object message;
-                while (messageBuilder.TryDequeue(out message))
+                while (this.messageBuilder.TryDequeue(out message))
                 {
-                    Received(this, new ReceivedMessageEventArgs(message));
+                    this.Received(this, new ReceivedMessageEventArgs(message));
                 }
             }
         }
@@ -56,12 +56,12 @@ namespace Griffin.Networking.Messaging
         {
             if (message == null) throw new ArgumentNullException("message");
 
-            var serializer = formatterFactory.CreateSerializer();
+            var serializer = this.formatterFactory.CreateSerializer();
             var buffer = new BufferSlice(65535);
             var writer = new BufferWriter(buffer);
             serializer.Serialize(message, writer);
 
-            Send(buffer, writer.Count);
+            this.Send(buffer, writer.Count);
         }
 
 

@@ -23,7 +23,7 @@ namespace Griffin.Networking.Pipelines.Messages
         /// </summary>
         public IPEndPoint EndPoint
         {
-            get { return endPoint; }
+            get { return this.endPoint; }
         }
     }
 }

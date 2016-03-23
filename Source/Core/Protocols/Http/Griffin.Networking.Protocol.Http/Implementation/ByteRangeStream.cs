@@ -68,7 +68,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <returns>A long value representing the length of the stream in bytes.</returns>
         public override long Length
         {
-            get { return ranges.TotalLength; }
+            get { return this.ranges.TotalLength; }
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <exception cref="System.NotSupportedException">this stream can only be used to read ranges.</exception>
         public override long Position
         {
-            get { return bytesRead; }
+            get { return this.bytesRead; }
             set { throw new NotSupportedException("this stream can only be used to read ranges."); }
         }
 
@@ -127,22 +127,22 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             if (offset + count > buffer.Length)
                 throw new ArgumentOutOfRangeException("count", offset+count, string.Format("Offset+Count larger than the buffer size ({0} bytes).", buffer.Length));
-            if (count - offset > bytesRead + ranges.TotalLength)
-                throw new ArgumentOutOfRangeException("count", count, string.Format("Trying to read more then is left in the ranges ({0} bytes).", (ranges.TotalLength - bytesRead)));
+            if (count - offset > this.bytesRead + this.ranges.TotalLength)
+                throw new ArgumentOutOfRangeException("count", count, string.Format("Trying to read more then is left in the ranges ({0} bytes).", (this.ranges.TotalLength - this.bytesRead)));
 
             var bytesToRead = count;
             while (true)
             {
-                if (currentRangeIndex >= ranges.Count)
+                if (this.currentRangeIndex >= this.ranges.Count)
                     throw new ArgumentOutOfRangeException("count", count,
                                                           "Tried to read more bytes when all ranges has been read.");
 
-                var range = ranges[currentRangeIndex];
-                var read = range.Read(innerStream, buffer, offset, bytesToRead);
+                var range = this.ranges[this.currentRangeIndex];
+                var read = range.Read(this.innerStream, buffer, offset, bytesToRead);
                 if (range.IsDone)
-                    currentRangeIndex++;
+                    this.currentRangeIndex++;
 
-                bytesRead += read;
+                this.bytesRead += read;
                 
                 if (read == bytesToRead)
                     return read;

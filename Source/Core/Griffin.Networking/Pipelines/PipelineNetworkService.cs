@@ -98,7 +98,7 @@ namespace Griffin.Networking.Pipelines
         public void HandleReceive(object message)
         {
             var stream = (SliceStream) message;
-            pipeline.SendUpstream(new Received(context.RemoteEndPoint, stream));
+            this.pipeline.SendUpstream(new Received(this.context.RemoteEndPoint, stream));
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Griffin.Networking.Pipelines
         /// <param name="context">Context info</param>
         public virtual void OnUnhandledException(ServiceExceptionContext context)
         {
-            pipeline.SendUpstream(new PipelineFailure(context.Exception));
+            this.pipeline.SendUpstream(new PipelineFailure(context.Exception));
         }
 
         #endregion

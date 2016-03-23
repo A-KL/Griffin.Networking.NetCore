@@ -31,34 +31,34 @@ namespace Griffin.Networking.Servers
             if (configuration == null) throw new ArgumentNullException("configuration");
             configuration.Validate();
 
-            numConnectedSockets = 0;
-            maxAmountOfConnection = configuration.MaximumNumberOfClients;
-            maxNumberAcceptedClients = new Semaphore(configuration.MaximumNumberOfClients,
+            this.numConnectedSockets = 0;
+            this.maxAmountOfConnection = configuration.MaximumNumberOfClients;
+            this.maxNumberAcceptedClients = new Semaphore(configuration.MaximumNumberOfClients,
                                                       configuration.MaximumNumberOfClients);
 
-            listenerArgs = new SocketAsyncEventArgs();
-            listenerArgs.Completed += OnAccept;
+            this.listenerArgs = new SocketAsyncEventArgs();
+            this.listenerArgs.Completed += this.OnAccept;
 
             // *2 since we need one for each send/receive pair.
-            bufferSliceStack = new BufferSliceStack(configuration.MaximumNumberOfClients*2, configuration.BufferSize);
+            this.bufferSliceStack = new BufferSliceStack(configuration.MaximumNumberOfClients*2, configuration.BufferSize);
         }
 
 
         private void Init()
         {
-            for (var i = 0; i < maxAmountOfConnection; i++)
+            for (var i = 0; i < this.maxAmountOfConnection; i++)
             {
-                var context = CreateClientContext(bufferSliceStack.Pop());
-                context.Disconnected += OnClientDisconnectedInternal;
-                context.UnhandledExceptionCaught += OnClientException;
-                context.SetWriteBuffer(bufferSliceStack.Pop());
-                contexts.Push(context);
+                var context = this.CreateClientContext(this.bufferSliceStack.Pop());
+                context.Disconnected += this.OnClientDisconnectedInternal;
+                context.UnhandledExceptionCaught += this.OnClientException;
+                context.SetWriteBuffer(this.bufferSliceStack.Pop());
+                this.contexts.Push(context);
             }
         }
 
         private void OnClientException(object sender, ClientExceptionEventArgs e)
         {
-            UnhandledClientExceptionCaught(this, e);
+            this.UnhandledClientExceptionCaught(this, e);
         }
 
         /// <summary>
@@ -81,11 +81,11 @@ namespace Griffin.Networking.Servers
         private void OnClientDisconnectedInternal(object sender, EventArgs e)
         {
             var context = (ServerClientContext) sender;
-            OnClientDisconnected(context);
-            Interlocked.Decrement(ref numConnectedSockets);
-            maxNumberAcceptedClients.Release();
+            this.OnClientDisconnected(context);
+            Interlocked.Decrement(ref this.numConnectedSockets);
+            this.maxNumberAcceptedClients.Release();
             context.Reset();
-            contexts.Push(context);
+            this.contexts.Push(context);
         }
 
         /// <summary>
@@ -104,18 +104,18 @@ namespace Griffin.Networking.Servers
         /// <param name="localEndPoint">End point that the server should listen on.</param>
         public void Start(IPEndPoint localEndPoint)
         {
-            if (listener != null)
+            if (this.listener != null)
                 throw new InvalidOperationException("Server already started.");
 
-            if (contexts.IsEmpty)
-                Init();
+            if (this.contexts.IsEmpty)
+                this.Init();
 
-            listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            listener.Bind(localEndPoint);
-            listener.Listen(100);
-            LocalPort = ((IPEndPoint) listener.LocalEndPoint).Port;
+            this.listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this.listener.Bind(localEndPoint);
+            this.listener.Listen(100);
+            this.LocalPort = ((IPEndPoint) this.listener.LocalEndPoint).Port;
 
-            StartAccept();
+            this.StartAccept();
         }
 
         /// <summary>
@@ -126,12 +126,12 @@ namespace Griffin.Networking.Servers
 
         private void StartAccept()
         {
-            maxNumberAcceptedClients.WaitOne();
-            listenerArgs.AcceptSocket = null;
-            var willRaiseEvent = listener.AcceptAsync(listenerArgs);
+            this.maxNumberAcceptedClients.WaitOne();
+            this.listenerArgs.AcceptSocket = null;
+            var willRaiseEvent = this.listener.AcceptAsync(this.listenerArgs);
             if (!willRaiseEvent)
             {
-                OnAccept(this, listenerArgs);
+                this.OnAccept(this, this.listenerArgs);
             }
         }
 
@@ -140,16 +140,16 @@ namespace Griffin.Networking.Servers
         {
             if (e.SocketError != SocketError.Success)
             {
-                shutdown.Set();
+                this.shutdown.Set();
                 return;
             }
-            Interlocked.Increment(ref numConnectedSockets);
+            Interlocked.Increment(ref this.numConnectedSockets);
 
             ServerClientContext context;
-            if (!contexts.TryPop(out context))
+            if (!this.contexts.TryPop(out context))
                 throw new InvalidOperationException("Failed to get a new client context, all is currently in use.");
 
-            if (!ValidateClient(e.AcceptSocket))
+            if (!this.ValidateClient(e.AcceptSocket))
             {
                 try
                 {
@@ -162,11 +162,11 @@ namespace Griffin.Networking.Servers
                 return;
             }
 
-            var client = CreateClient(e.AcceptSocket.RemoteEndPoint);
+            var client = this.CreateClient(e.AcceptSocket.RemoteEndPoint);
             context.Assign(e.AcceptSocket, client);
-            OnClientConnected(context);
+            this.OnClientConnected(context);
 
-            StartAccept();
+            this.StartAccept();
         }
 
         /// <summary>
@@ -204,12 +204,12 @@ namespace Griffin.Networking.Servers
         /// <remarks>Any existing connections will continue to run until they disconnect.</remarks>
         public void Stop()
         {
-            if (listener == null)
+            if (this.listener == null)
                 return;
 
-            listener.Dispose();
-            shutdown.WaitOne(5000);
-            listener = null;
+            this.listener.Dispose();
+            this.shutdown.WaitOne(5000);
+            this.listener = null;
         }
 
         /// <summary>
@@ -220,8 +220,8 @@ namespace Griffin.Networking.Servers
         
         public void Dispose()
         {
-            Stop();
-            foreach (var c in contexts)
+            this.Stop();
+            foreach (var c in this.contexts)
             {
                 c.Dispose();
             }

@@ -23,10 +23,10 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
         /// </summary>
         public HeaderDecoder()
         {
-            _headerParser = new HttpHeaderParser();
-            _headerParser.HeaderParsed += OnHeader;
-            _headerParser.Completed += OnHeaderCompleted;
-            _headerParser.RequestLineParsed += OnRequestLine;
+            this._headerParser = new HttpHeaderParser();
+            this._headerParser.HeaderParsed += this.OnHeader;
+            this._headerParser.Completed += this.OnHeaderCompleted;
+            this._headerParser.RequestLineParsed += this.OnRequestLine;
         }
 
         #region IUpstreamHandler Members
@@ -40,36 +40,36 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
         {
             if (message is Closed)
             {
-                _bodyBytesLeft = 0;
-                _headerParser.Reset();
+                this._bodyBytesLeft = 0;
+                this._headerParser.Reset();
             }
             else if (message is Received)
             {
                 var msg = (Received) message;
 
                 // complete the body
-                if (_bodyBytesLeft > 0)
+                if (this._bodyBytesLeft > 0)
                 {
-                    var bytesToSend = Math.Min(_bodyBytesLeft, msg.BufferReader.RemainingLength);
-                    _bodyBytesLeft -= bytesToSend;
+                    var bytesToSend = Math.Min(this._bodyBytesLeft, msg.BufferReader.RemainingLength);
+                    this._bodyBytesLeft -= bytesToSend;
                     context.SendUpstream(message);
                     return;
                 }
 
-                _headerParser.Parse(msg.BufferReader);
-                if (_headerCompleted)
+                this._headerParser.Parse(msg.BufferReader);
+                if (this._headerCompleted)
                 {
-                    var request = (IRequest) _message;
+                    var request = (IRequest) this._message;
 
-                    var ourRequest = _message as HttpRequest;
+                    var ourRequest = this._message as HttpRequest;
                     if (ourRequest != null)
                         ourRequest.RemoteEndPoint = msg.RemoteEndPoint as IPEndPoint;
                     request.AddHeader("RemoteAddress", msg.RemoteEndPoint.ToString());
 
                     var receivedHttpRequest = new ReceivedHttpRequest(request);
 
-                    _headerParser.Reset();
-                    _headerCompleted = false;
+                    this._headerParser.Reset();
+                    this._headerCompleted = false;
 
                     context.SendUpstream(receivedHttpRequest);
                     if (msg.BufferReader.RemainingLength > 0)
@@ -86,18 +86,18 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
 
         private void OnRequestLine(object sender, RequestLineEventArgs e)
         {
-            _message = new HttpRequest(e.Verb, e.Url, e.HttpVersion);
+            this._message = new HttpRequest(e.Verb, e.Url, e.HttpVersion);
         }
 
         private void OnHeaderCompleted(object sender, EventArgs e)
         {
-            _bodyBytesLeft = _message.ContentLength;
-            _headerCompleted = true;
+            this._bodyBytesLeft = this._message.ContentLength;
+            this._headerCompleted = true;
         }
 
         private void OnHeader(object sender, HeaderEventArgs e)
         {
-            _message.AddHeader(e.Name, e.Value);
+            this._message.AddHeader(e.Name, e.Value);
         }
     }
 }

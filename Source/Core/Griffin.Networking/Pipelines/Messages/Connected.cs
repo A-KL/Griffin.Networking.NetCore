@@ -16,7 +16,7 @@ namespace Griffin.Networking.Pipelines.Messages
         /// <param name="remoteEndPoint">The remote end point.</param>
         public Connected(EndPoint remoteEndPoint)
         {
-            RemoteEndPoint = remoteEndPoint;
+            this.RemoteEndPoint = remoteEndPoint;
         }
 
         /// <summary>

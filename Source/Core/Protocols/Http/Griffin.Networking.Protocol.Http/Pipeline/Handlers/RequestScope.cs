@@ -18,7 +18,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
         /// <param name="listener">The listener.</param>
         public RequestScope(IScopeListener listener)
         {
-            _listener = listener;
+            this._listener = listener;
         }
 
         #region IDownstreamHandler Members
@@ -34,7 +34,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
         /// </remarks>
         public void HandleDownstream(IPipelineHandlerContext context, IPipelineMessage message)
         {
-            _listener.ScopeEnded(_id);
+            this._listener.ScopeEnded(this._id);
         }
 
         #endregion
@@ -53,11 +53,11 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
         {
             try
             {
-                _listener.ScopeStarted(_id);
+                this._listener.ScopeStarted(this._id);
             }
             catch (Exception)
             {
-                _listener.ScopeEnded(_id);
+                this._listener.ScopeEnded(this._id);
                 throw;
             }
         }

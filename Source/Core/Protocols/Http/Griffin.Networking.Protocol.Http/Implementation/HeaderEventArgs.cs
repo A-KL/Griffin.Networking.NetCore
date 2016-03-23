@@ -27,8 +27,8 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public void Set(string name, string value)
         {
             if (name == null) throw new ArgumentNullException("name");
-            Name = name;
-            Value = value;
+            this.Name = name;
+            this.Value = value;
         }
     }
 }

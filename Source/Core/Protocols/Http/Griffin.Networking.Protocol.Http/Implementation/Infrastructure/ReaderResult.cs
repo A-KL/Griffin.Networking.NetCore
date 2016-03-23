@@ -10,7 +10,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation.Infrastructure
         /// </summary>
         public ReaderResult()
         {
-            Value = "";
+            this.Value = "";
         }
 
         /// <summary>

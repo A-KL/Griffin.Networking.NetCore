@@ -14,7 +14,7 @@ namespace Griffin.Networking.Messaging
         public ReceivedMessageEventArgs(object message)
         {
             if (message == null) throw new ArgumentNullException("message");
-            Message = message;
+            this.Message = message;
         }
 
         /// <summary>

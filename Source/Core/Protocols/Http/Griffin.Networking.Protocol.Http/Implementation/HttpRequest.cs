@@ -24,10 +24,10 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public HttpRequest()
         {
-            cookies = new HttpCookieCollection<IHttpCookie>();
-            files = new HttpFileCollection();
-            queryString = new ParameterCollection();
-            form = new ParameterCollection();
+            this.cookies = new HttpCookieCollection<IHttpCookie>();
+            this.files = new HttpFileCollection();
+            this.queryString = new ParameterCollection();
+            this.form = new ParameterCollection();
         }
 
         /// <summary>
@@ -43,12 +43,12 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             if (httpMethod == null) throw new ArgumentNullException("httpMethod");
             if (url == null) throw new ArgumentNullException("url");
             if (httpVersion == null) throw new ArgumentNullException("httpVersion");
-            Method = httpMethod;
+            this.Method = httpMethod;
 
-            Uri = ProduceGoodUri(url);
-            pathAndQuery = Uri.PathAndQuery;
+            this.Uri = ProduceGoodUri(url);
+            this.pathAndQuery = this.Uri.PathAndQuery;
 
-            ProtocolVersion = httpVersion;
+            this.ProtocolVersion = httpVersion;
         }
 
         #region IRequest Members
@@ -60,7 +60,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             get
             {
-                var header = Headers["Connection"];
+                var header = this.Headers["Connection"];
                 if (header == null || string.IsNullOrEmpty(header.Value))
                     return false;
 
@@ -76,7 +76,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             get
             {
-                var header = Headers["Content-Type"];
+                var header = this.Headers["Content-Type"];
                 return header != null ? header.Value : null;
             }
         }
@@ -86,7 +86,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public IHttpCookieCollection<IHttpCookie> Cookies
         {
-            get { return cookies; }
+            get { return this.cookies; }
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public IHttpFileCollection Files
         {
-            get { return files; }
+            get { return this.files; }
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public IParameterCollection Form
         {
-            get { return form; }
+            get { return this.form; }
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             get
             {
-                var header = Headers["X-Requested-Width"];
+                var header = this.Headers["X-Requested-Width"];
                 if (header == null || string.IsNullOrEmpty(header.Value))
                     return false;
 
@@ -135,7 +135,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public IParameterCollection QueryString
         {
-            get { return queryString; }
+            get { return this.queryString; }
         }
 
         /// <summary>
@@ -143,15 +143,15 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public Uri Uri
         {
-            get { return uri; }
+            get { return this.uri; }
             set
             {
-                uri = value;
+                this.uri = value;
                 var decoder = new UrlDecoder();
-                queryString.Clear();
+                this.queryString.Clear();
                 using (var reader = new StringReader(value.Query.TrimStart('?')))
                 {
-                    decoder.Parse(reader, QueryString);
+                    decoder.Parse(reader, this.QueryString);
                 }
             }
         }
@@ -167,7 +167,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public IResponse CreateResponse(HttpStatusCode code, string reason)
         {
             if (reason == null) throw new ArgumentNullException("reason");
-            return new HttpResponse(ProtocolVersion, code, reason);
+            return new HttpResponse(this.ProtocolVersion, code, reason);
         }
 
         /// <summary>
@@ -182,23 +182,23 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             if (name.Equals("host", StringComparison.OrdinalIgnoreCase))
             {
-                Uri = value.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                          ? new Uri(string.Format("{0}{1}", value, pathAndQuery))
-                          : new Uri(string.Format("http://{0}{1}", value, pathAndQuery));
+                this.Uri = value.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                          ? new Uri(string.Format("{0}{1}", value, this.pathAndQuery))
+                          : new Uri(string.Format("http://{0}{1}", value, this.pathAndQuery));
             }
             if (name.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
             {
-                ParseContentType(value);
+                this.ParseContentType(value);
                 return;
             }
             if (name.Equals("Content-Length", StringComparison.CurrentCultureIgnoreCase))
             {
-                ContentLength = int.Parse(value);
+                this.ContentLength = int.Parse(value);
             }
             if (name.Equals("Cookie", StringComparison.OrdinalIgnoreCase))
             {
                 var parser = new HttpCookieParser(value);
-                cookies = parser.Parse();
+                this.cookies = parser.Parse();
             }
 
             base.AddHeader(name, value);
@@ -218,7 +218,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
                     encoding = encoding.Remove(0, "charset=".Length);
                     try
                     {
-                        ContentEncoding = Encoding.GetEncoding(encoding);
+                        this.ContentEncoding = Encoding.GetEncoding(encoding);
                     }
                     catch (Exception err)
                     {

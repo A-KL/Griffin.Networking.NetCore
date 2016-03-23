@@ -27,13 +27,13 @@ namespace Griffin.Networking.Buffers
         /// <returns>Char if not EOF; otherwise <see cref="char.MinValue"/></returns>
         public char Peek()
         {
-            if (Position >= Length)
+            if (this.Position >= this.Length)
                 return char.MinValue;
 
             ArraySegment<byte> segment;
             if (this.TryGetBuffer(out segment))
             {
-                return (char)segment.Array[Position + 1];
+                return (char)segment.Array[this.Position + 1];
             }
 
             return Char.MaxValue;

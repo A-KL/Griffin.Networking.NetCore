@@ -25,10 +25,10 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             get
             {
-                if (index < 0 || index >= Count)
+                if (index < 0 || index >= this.Count)
                     throw new ArgumentOutOfRangeException("index", index,
-                                                          string.Format("Must be between 0 and {0}.", Count - 1));
-                return ranges[index];
+                                                          string.Format("Must be between 0 and {0}.", this.Count - 1));
+                return this.ranges[index];
             }
         }
 
@@ -37,7 +37,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public int Count
         {
-            get { return ranges.Count; }
+            get { return this.ranges.Count; }
         }
 
         /// <summary>
@@ -46,12 +46,12 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <returns></returns>
         public IEnumerator<Range> GetEnumerator()
         {
-            return ranges.GetEnumerator();
+            return this.ranges.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
 
         /// <summary>
@@ -89,11 +89,11 @@ namespace Griffin.Networking.Protocol.Http.Implementation
                 var ourRange = new Range(range, streamLength);
 
                 this.ranges.Add(ourRange);
-                TotalLength = TotalLength + ourRange.Count;
-                if (TotalLength >= streamLength)
+                this.TotalLength = this.TotalLength + ourRange.Count;
+                if (this.TotalLength >= streamLength)
                     throw new ArgumentException(
                         string.Format("Inner stream is just {0} bytes long, while we should send {1} bytes.",
-                                      streamLength, TotalLength));
+                                      streamLength, this.TotalLength));
             }
         }
 
@@ -104,7 +104,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <returns></returns>
         public string ToHtmlHeaderValue(int streamLength)
         {
-            return string.Format("bytes {0}/{1}", ranges[0], streamLength);
+            return string.Format("bytes {0}/{1}", this.ranges[0], streamLength);
         }
     }
 }

@@ -41,10 +41,10 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
         public BodyDecoder(IBodyDecoder decoderService, int bufferSize, int sizeLimit)
         {
             if (decoderService == null) throw new ArgumentNullException("decoderService");
-            _decoderService = decoderService;
-            _bufferSize = bufferSize;
-            _sizeLimit = sizeLimit;
-            _bufferPool = new BufferSliceStack(1000, bufferSize);
+            this._decoderService = decoderService;
+            this._bufferSize = bufferSize;
+            this._sizeLimit = sizeLimit;
+            this._bufferPool = new BufferSliceStack(1000, bufferSize);
         }
 
         /// <summary>
@@ -58,12 +58,12 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
         {
             if (decoderService == null) throw new ArgumentNullException("decoderService");
             if (bufferSliceStack == null) throw new ArgumentNullException("bufferSliceStack");
-            _decoderService = decoderService;
-            _sizeLimit = sizeLimit;
-            _bufferPool = bufferSliceStack;
+            this._decoderService = decoderService;
+            this._sizeLimit = sizeLimit;
+            this._bufferPool = bufferSliceStack;
 
             var buffer = bufferSliceStack.Pop();
-            _bufferSize = buffer.Count;
+            this._bufferSize = buffer.Count;
             bufferSliceStack.Push(buffer);
         }
 
@@ -82,11 +82,10 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
             var httpmsg = message as ReceivedHttpRequest;
             if (httpmsg != null)
             {
-                if (httpmsg.HttpRequest.ContentLength > _sizeLimit)
+                if (httpmsg.HttpRequest.ContentLength > this._sizeLimit)
                 {
                     var response = httpmsg.HttpRequest.CreateResponse(HttpStatusCode.RequestEntityTooLarge,
-                                                                      string.Format("Max body size is {0} bytes.",
-                                                                                    _sizeLimit));
+                                                                      string.Format("Max body size is {0} bytes.", this._sizeLimit));
                     context.SendDownstream(new SendHttpResponse(httpmsg.HttpRequest, response));
                     return;
                 }
@@ -97,24 +96,24 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
                     return;
                 }
 
-                _currentMessage = httpmsg.HttpRequest;
+                this._currentMessage = httpmsg.HttpRequest;
                 return; // don't send the request upwards.
             }
 
             var msg = message as Received;
             if (msg != null)
             {
-                if (_currentMessage == null)
+                if (this._currentMessage == null)
                     throw new InvalidOperationException("Current message is not set. We have no way of knowing when to stop decoding the body.");
 
-                var result = ParseBody(msg.BufferReader);
+                var result = this.ParseBody(msg.BufferReader);
                 if (!result)
                     return;
 
-                _currentMessage.Body.Position = 0;
-                _decoderService.Decode((IRequest) _currentMessage);
-                context.SendUpstream(new ReceivedHttpRequest((HttpRequest) _currentMessage));
-                _currentMessage = null;
+                this._currentMessage.Body.Position = 0;
+                this._decoderService.Decode((IRequest) this._currentMessage);
+                context.SendUpstream(new ReceivedHttpRequest((HttpRequest) this._currentMessage));
+                this._currentMessage = null;
                 return;
             }
 
@@ -136,24 +135,24 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
             if (reader.RemainingLength == 0)
                 return false;
 
-            if (_currentMessage.Body == null)
+            if (this._currentMessage.Body == null)
             {
-                if (_currentMessage.ContentLength > _bufferSize)
-                    _currentMessage.Body =
+                if (this._currentMessage.ContentLength > this._bufferSize)
+                    this._currentMessage.Body =
                         new FileStream(
                             Path.Combine(Path.GetTempPath(), "http." + Guid.NewGuid().ToString("N") + ".tmp"),
                             FileMode.CreateNew);
                 else
                 {
-                    var slice = _bufferPool.Pop();
-                    _currentMessage.Body = new SliceStream(slice);
+                    var slice = this._bufferPool.Pop();
+                    this._currentMessage.Body = new SliceStream(slice);
                 }
             }
 
             var bytesLeft =
-                (int) Math.Min(_currentMessage.ContentLength - _currentMessage.Body.Length, reader.RemainingLength);
-            reader.CopyTo(_currentMessage.Body, bytesLeft);
-            return _currentMessage.Body.Length == _currentMessage.ContentLength;
+                (int) Math.Min(this._currentMessage.ContentLength - this._currentMessage.Body.Length, reader.RemainingLength);
+            reader.CopyTo(this._currentMessage.Body, bytesLeft);
+            return this._currentMessage.Body.Length == this._currentMessage.ContentLength;
         }
     }
 }

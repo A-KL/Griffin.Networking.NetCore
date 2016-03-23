@@ -32,7 +32,7 @@ namespace Griffin.Networking.Logging
         /// </summary>
         public Type LoggedType
         {
-            get { return loggedType; }
+            get { return this.loggedType; }
         }
 
         #region ILogger Members
@@ -43,7 +43,7 @@ namespace Griffin.Networking.Logging
         /// <param name="message">Message to log</param>
         public void Trace(string message)
         {
-            Write(LogLevel.Trace, message, null);
+            this.Write(LogLevel.Trace, message, null);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Griffin.Networking.Logging
         /// <param name="exception">Thrown exception</param>
         public void Trace(string message, Exception exception)
         {
-            Write(LogLevel.Trace, message, exception);
+            this.Write(LogLevel.Trace, message, exception);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Griffin.Networking.Logging
         /// <param name="message">Message to log</param>
         public void Debug(string message)
         {
-            Write(LogLevel.Debug, message, null);
+            this.Write(LogLevel.Debug, message, null);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Griffin.Networking.Logging
         /// <param name="exception">Exception which has been thrown</param>
         public void Debug(string message, Exception exception)
         {
-            Write(LogLevel.Debug, message, exception);
+            this.Write(LogLevel.Debug, message, exception);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Griffin.Networking.Logging
         /// <param name="message">Message to log</param>
         public void Warning(string message)
         {
-            Write(LogLevel.Warning, message, null);
+            this.Write(LogLevel.Warning, message, null);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Griffin.Networking.Logging
         /// <param name="exception">Exception which has been thrown</param>
         public void Warning(string message, Exception exception)
         {
-            Write(LogLevel.Warning, message, exception);
+            this.Write(LogLevel.Warning, message, exception);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Griffin.Networking.Logging
         /// <param name="message">Message to log</param>
         public void Error(string message)
         {
-            Write(LogLevel.Error, message, null);
+            this.Write(LogLevel.Error, message, null);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Griffin.Networking.Logging
         /// <param name="exception">Exception which has been thrown</param>
         public void Error(string message, Exception exception)
         {
-            Write(LogLevel.Error, message, exception);
+            this.Write(LogLevel.Error, message, exception);
         }
 
         #endregion
@@ -134,7 +134,7 @@ namespace Griffin.Networking.Logging
         {
             var buffer = "".PadLeft(spaces) + exception + "\r\n";
             if (exception.InnerException != null)
-                buffer += BuildExceptionDetails(exception.InnerException, spaces + 4);
+                buffer += this.BuildExceptionDetails(exception.InnerException, spaces + 4);
 
             return buffer;
         }

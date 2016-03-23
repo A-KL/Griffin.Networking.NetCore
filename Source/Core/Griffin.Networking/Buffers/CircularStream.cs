@@ -23,7 +23,7 @@ namespace Griffin.Networking.Buffers
         public CircularStream(byte[] buffer, int offset, int capacity)
         {
             this.buffer = buffer;
-            startOffset = offset;
+            this.startOffset = offset;
             this.capacity = capacity;
         }
 
@@ -37,14 +37,14 @@ namespace Griffin.Networking.Buffers
         public CircularStream(byte[] buffer, int offset, int capacity, int writtenCount)
         {
             this.buffer = buffer;
-            startOffset = offset;
+            this.startOffset = offset;
             this.capacity = capacity;
-            count = writtenCount;
+            this.count = writtenCount;
         }
 
         private int EndOffset
         {
-            get { return startOffset + capacity; }
+            get { return this.startOffset + this.capacity; }
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Griffin.Networking.Buffers
         /// <filterpriority>1</filterpriority>
         public override bool CanWrite
         {
-            get { return count < capacity; }
+            get { return this.count < this.capacity; }
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Griffin.Networking.Buffers
         ///                 </exception><filterpriority>1</filterpriority>
         public override long Length
         {
-            get { return count; }
+            get { return this.count; }
         }
 
         /// <summary>
@@ -109,23 +109,23 @@ namespace Griffin.Networking.Buffers
         ///                 </exception><filterpriority>1</filterpriority>
         public override long Position
         {
-            get { return position; }
+            get { return this.position; }
             set
             {
-                if (value > capacity)
+                if (value > this.capacity)
                 {
                     throw new ArgumentOutOfRangeException(
-                        string.Format("'{0}' is larger than the allocated buffer of '{1}'", value, capacity));
+                        string.Format("'{0}' is larger than the allocated buffer of '{1}'", value, this.capacity));
                 }
 
                 // 4 5 6 7 8
                 //     Y        Position += 4 => 6 (offset) + 4 = 10 => 9 - 5 (capacity) = 5
                 //              
-                var newPosition = startOffset + value;
-                if (newPosition > EndOffset)
-                    newPosition -= capacity;
+                var newPosition = this.startOffset + value;
+                if (newPosition > this.EndOffset)
+                    newPosition -= this.capacity;
 
-                position = newPosition;
+                this.position = newPosition;
             }
         }
 
@@ -139,14 +139,14 @@ namespace Griffin.Networking.Buffers
         /// </returns>
         public char Peek()
         {
-            if (position >= count)
+            if (this.position >= this.count)
                 return char.MinValue;
 
-            var peekPos = position + 1;
-            if (startOffset + startOffset > EndOffset)
-                return (char) buffer[startOffset];
+            var peekPos = this.position + 1;
+            if (this.startOffset + this.startOffset > this.EndOffset)
+                return (char) this.buffer[this.startOffset];
 
-            return (char) buffer[peekPos];
+            return (char) this.buffer[peekPos];
         }
 
         #endregion
@@ -186,17 +186,17 @@ namespace Griffin.Networking.Buffers
             switch (origin)
             {
                 case SeekOrigin.Begin:
-                    Position = startOffset + (int) offset;
+                    this.Position = this.startOffset + (int) offset;
                     break;
                 case SeekOrigin.Current:
-                    Position += (int) offset;
+                    this.Position += (int) offset;
                     break;
                 default:
-                    Position = count - (int) offset;
+                    this.Position = this.count - (int) offset;
                     break;
             }
 
-            return Position;
+            return this.Position;
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Griffin.Networking.Buffers
                 throw new ArgumentOutOfRangeException("offset");
             if (count < 0)
                 throw new ArgumentOutOfRangeException("offset");
-            if (offset + startOffset >= EndOffset)
+            if (offset + this.startOffset >= this.EndOffset)
                 throw new ArgumentOutOfRangeException(
                     string.Format("Offset {0} is larger than stream size of {1}.", offset, this.count));
             if (offset + count > buffer.Length)
@@ -243,15 +243,15 @@ namespace Griffin.Networking.Buffers
                     string.Format("Offset {0} + Count {1} is larger than buffer size of {2}.", offset, count,
                                   buffer.Length));
 
-            var realPosition = position + startOffset;
-            if (count > count - Position)
-                count = count - (int) Position;
+            var realPosition = this.position + this.startOffset;
+            if (count > count - this.Position)
+                count = count - (int) this.Position;
 
             // split copy
-            if (realPosition + count > EndOffset)
+            if (realPosition + count > this.EndOffset)
             {
-                var firstAmount = EndOffset - realPosition;
-                Buffer.BlockCopy(this.buffer, (int) position, buffer, offset, (int) firstAmount);
+                var firstAmount = this.EndOffset - realPosition;
+                Buffer.BlockCopy(this.buffer, (int) this.position, buffer, offset, (int) firstAmount);
                 var secondAmount = count - firstAmount;
                 Buffer.BlockCopy(this.buffer, 0, this.buffer, offset + (int) firstAmount, (int) secondAmount);
             }
@@ -282,10 +282,9 @@ namespace Griffin.Networking.Buffers
                 throw new ArgumentOutOfRangeException("offset");
             if (buffer == null)
                 throw new ArgumentNullException("buffer");
-            if (count > capacity - count)
+            if (count > this.capacity - count)
                 throw new InvalidOperationException(
-                    string.Format("Want to write {0} bytes, only {1} is left of the capacity of {2}", count,
-                                  capacity - this.count, capacity));
+                    string.Format("Want to write {0} bytes, only {1} is left of the capacity of {2}", count, this.capacity - this.count, this.capacity));
 
             /*
             // split copy

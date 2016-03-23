@@ -24,9 +24,9 @@ namespace Griffin.Networking
         {
             if (slice == null) throw new ArgumentNullException("slice");
             this.slice = slice;
-            offset = this.slice.Offset;
-            bytesLeft = count;
-            length = count;
+            this.offset = this.slice.Offset;
+            this.bytesLeft = count;
+            this.length = count;
         }
 
         #region ISocketWriterJob Members
@@ -37,7 +37,7 @@ namespace Griffin.Networking
         /// <param name="args">Args used when sending bytes to the socket</param>
         public void Write(SocketAsyncEventArgs args)
         {
-            args.SetBuffer(slice.Buffer, offset, bytesLeft);
+            args.SetBuffer(this.slice.Buffer, this.offset, this.bytesLeft);
         }
 
         /// <summary>
@@ -49,9 +49,9 @@ namespace Griffin.Networking
         /// </returns>
         public bool WriteCompleted(int bytes)
         {
-            bytesLeft -= bytes;
-            offset += bytes;
-            return bytesLeft == 0;
+            this.bytesLeft -= bytes;
+            this.offset += bytes;
+            return this.bytesLeft == 0;
         }
 
         /// <summary>
@@ -60,11 +60,11 @@ namespace Griffin.Networking
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            var disposable = slice as IDisposable;
+            var disposable = this.slice as IDisposable;
             if (disposable != null)
             {
                 disposable.Dispose();
-                slice = null;
+                this.slice = null;
             }
         }
 
@@ -78,7 +78,7 @@ namespace Griffin.Networking
         /// </returns>
         public override string ToString()
         {
-            return string.Format("Slice at offset {0} with {1}/{2} bytes.", slice.Offset, bytesLeft, length);
+            return string.Format("Slice at offset {0} with {1}/{2} bytes.", this.slice.Offset, this.bytesLeft, this.length);
         }
     }
 }

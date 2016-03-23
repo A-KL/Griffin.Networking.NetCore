@@ -21,7 +21,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <filterpriority>1</filterpriority>
         public IEnumerator<IHeaderItem> GetEnumerator()
         {
-            return items.Values.GetEnumerator();
+            return this.items.Values.GetEnumerator();
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <filterpriority>2</filterpriority>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
 
         /// <summary>
@@ -46,12 +46,12 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             get
             {
                 HttpHeaderItem header;
-                return !items.TryGetValue(name, out header) ? null : header;
+                return !this.items.TryGetValue(name, out header) ? null : header;
             }
             set
             {
                 //LSP violation. (Got a solution which won't violate Law Of Demeter?)
-                items[name] = (HttpHeaderItem)value;
+                this.items[name] = (HttpHeaderItem)value;
             }
         }
 
@@ -63,12 +63,12 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             if (value == null) throw new ArgumentNullException("value");
 
             HttpHeaderItem header;
-            if (items.TryGetValue(name, out header))
+            if (this.items.TryGetValue(name, out header))
             {
                 header.AddValue(value);
             }
             else
-                items.Add(name, new HttpHeaderItem(name, value));
+                this.items.Add(name, new HttpHeaderItem(name, value));
         }
 
         public void Set(string name, string value)
@@ -76,7 +76,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             if (name == null) throw new ArgumentNullException("name");
             if (value == null) throw new ArgumentNullException("value");
 
-            items[name] = new HttpHeaderItem(name, value);
+            this.items[name] = new HttpHeaderItem(name, value);
         }
     }
 }

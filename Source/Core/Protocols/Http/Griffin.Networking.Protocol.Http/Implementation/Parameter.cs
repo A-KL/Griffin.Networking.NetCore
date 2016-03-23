@@ -13,8 +13,8 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             if (name == null) throw new ArgumentNullException("name");
             if (value == null) throw new ArgumentNullException("value");
-            Name = name;
-            values.Add(value);
+            this.Name = name;
+            this.values.Add(value);
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public IEnumerable<string> Values
         {
-            get { return values; }
+            get { return this.values; }
         }
 
         #region IParameter Members
@@ -36,7 +36,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <filterpriority>1</filterpriority>
         public IEnumerator<string> GetEnumerator()
         {
-            return values.GetEnumerator();
+            return this.values.GetEnumerator();
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <filterpriority>2</filterpriority>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <value>String if any value exist; otherwise <c>null</c>.</value>
         public string Value
         {
-            get { return values.Count == 0 ? null : values[values.Count - 1]; }
+            get { return this.values.Count == 0 ? null : this.values[this.values.Count - 1]; }
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <returns></returns>
         public string this[int index]
         {
-            get { return values[index]; }
+            get { return this.values[index]; }
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public int Count
         {
-            get { return values.Count; }
+            get { return this.values.Count; }
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public void Add(string value)
         {
             if (value == null) throw new ArgumentNullException("value");
-            values.Add(value);
+            this.values.Add(value);
         }
 
         #endregion
@@ -106,7 +106,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </returns>
         public override string ToString()
         {
-            return Name + ": " + string.Join(", ", Values);
+            return this.Name + ": " + string.Join(", ", this.Values);
         }
     }
 }

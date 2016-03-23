@@ -14,7 +14,7 @@ namespace Griffin.Networking
         /// <param name="socketError">The socket error that resulted in the disconnection.</param>
         public DisconnectEventArgs(SocketError socketError)
         {
-            SocketError = socketError;
+            this.SocketError = socketError;
         }
 
         /// <summary>

@@ -15,11 +15,11 @@ namespace Griffin.Networking.Pipelines.Messages
         /// <param name="length">Number of bytes written to the slice.</param>
         public SendSlice(IBufferSlice slice, int length)
         {
-            Length = length;
+            this.Length = length;
             if (slice == null)
                 throw new ArgumentNullException("slice");
 
-            Slice = slice;
+            this.Slice = slice;
         }
 
         /// <summary>

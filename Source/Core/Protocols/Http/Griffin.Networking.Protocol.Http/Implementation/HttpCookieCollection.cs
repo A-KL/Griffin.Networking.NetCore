@@ -25,7 +25,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <filterpriority>1</filterpriority>
         public IEnumerator<T> GetEnumerator()
         {
-            return items.GetEnumerator();
+            return this.items.GetEnumerator();
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <filterpriority>2</filterpriority>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             if (cookie == null)
                 throw new ArgumentNullException("cookie");
 
-            items.Add(cookie);
+            this.items.Add(cookie);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public int Count
         {
-            get { return items.Count; }
+            get { return this.items.Count; }
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             get
             {
                 if (id == null) throw new ArgumentNullException("id");
-                return items.FirstOrDefault(x => x.Name.Equals(id, StringComparison.OrdinalIgnoreCase));
+                return this.items.FirstOrDefault(x => x.Name.Equals(id, StringComparison.OrdinalIgnoreCase));
             }
         }
 
@@ -77,7 +77,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public void Clear()
         {
-            items.Clear();
+            this.items.Clear();
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public void Remove(string cookieName)
         {
             if (cookieName == null) throw new ArgumentNullException("cookieName");
-            items.RemoveAll(x => x.Name.Equals(cookieName, StringComparison.OrdinalIgnoreCase));
+            this.items.RemoveAll(x => x.Name.Equals(cookieName, StringComparison.OrdinalIgnoreCase));
         }
 
         #endregion

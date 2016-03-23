@@ -14,7 +14,7 @@ namespace Griffin.Networking.Messaging
         /// <seealso cref="MessageFormatterFactory"/>
         public MessagingServerConfiguration(IMessageFormatterFactory messageFormatterFactory)
         {
-            MessageFormatterFactory = messageFormatterFactory;
+            this.MessageFormatterFactory = messageFormatterFactory;
         }
 
 

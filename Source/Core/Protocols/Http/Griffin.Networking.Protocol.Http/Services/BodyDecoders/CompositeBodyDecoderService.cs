@@ -17,8 +17,8 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders
         /// </summary>
         public CompositeBodyDecoder()
         {
-            decoders.Add(UrlFormattedDecoder.MimeType, new UrlFormattedDecoder());
-            decoders.Add(MultipartDecoder.MimeType, new MultipartDecoder());
+            this.decoders.Add(UrlFormattedDecoder.MimeType, new UrlFormattedDecoder());
+            this.decoders.Add(MultipartDecoder.MimeType, new MultipartDecoder());
         }
 
         #region IBodyDecoder Members
@@ -31,9 +31,9 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders
         public bool Decode(IRequest message)
         {
             IBodyDecoder decoder;
-            var contentType = GetContentTypeWithoutCharset(message.ContentType);
+            var contentType = this.GetContentTypeWithoutCharset(message.ContentType);
 
-            if (!decoders.TryGetValue(contentType, out decoder))
+            if (!this.decoders.TryGetValue(contentType, out decoder))
                 return false;
 
             decoder.Decode(message);
@@ -51,7 +51,7 @@ namespace Griffin.Networking.Protocol.Http.Services.BodyDecoders
         {
             if (mimeType == null) throw new ArgumentNullException("mimeType");
             if (decoder == null) throw new ArgumentNullException("decoder");
-            decoders[mimeType] = decoder;
+            this.decoders[mimeType] = decoder;
         }
 
         private string GetContentTypeWithoutCharset(string contentType)

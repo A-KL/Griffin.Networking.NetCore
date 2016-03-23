@@ -56,10 +56,10 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication
         /// </summary>
         public void CreateChallenge(IRequest request, IResponse response)
         {
-            var nonce = nonceService.CreateNonce();
+            var nonce = this.nonceService.CreateNonce();
 
             var challenge = new StringBuilder();
-            challenge.AppendFormat(@"Digest realm=""{0}"", ", realmRepository.GetRealm(request));
+            challenge.AppendFormat(@"Digest realm=""{0}"", ", this.realmRepository.GetRealm(request));
             challenge.AppendFormat(@"nonce=""{0}"", ", nonce);
             challenge.Append(@"qop=""auth"", ");
             challenge.Append("algorithm=MD5");
@@ -114,28 +114,28 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication
 
             var parser = new NameValueParser();
             var parameters = new ParameterCollection();
-            parser.Parse(authHeader.Value.Remove(0, AuthenticationScheme.Length + 1), parameters);
+            parser.Parse(authHeader.Value.Remove(0, this.AuthenticationScheme.Length + 1), parameters);
 
             var nc = int.Parse(parameters["nc"], NumberStyles.AllowHexSpecifier);
-            if (!nonceService.IsValid(parameters["nonce"], nc) && !DisableNonceCheck)
+            if (!this.nonceService.IsValid(parameters["nonce"], nc) && !DisableNonceCheck)
                 throw new HttpException(HttpStatusCode.Forbidden, "Invalid nonce/nc.");
 
             // request authentication information
             var username = parameters["username"];
-            var user = userService.Lookup(username, request.Uri);
+            var user = this.userService.Lookup(username, request.Uri);
             if (user == null)
                 return null;
 
             var uri = parameters["uri"];
             // Encode authentication info
             var ha1 = string.IsNullOrEmpty(user.Ha1)
-                          ? GetHa1(realmRepository.GetRealm(request), username, user.Password)
+                          ? GetHa1(this.realmRepository.GetRealm(request), username, user.Password)
                           : user.Ha1;
 
             // encode challenge info
             var a2 = String.Format("{0}:{1}", request.Method, uri);
             var ha2 = GetMd5HashBinHex(a2);
-            var hashedDigest = Encrypt(ha1, ha2, parameters["qop"],
+            var hashedDigest = this.Encrypt(ha1, ha2, parameters["qop"],
                                        parameters["nonce"], parameters["nc"], parameters["cnonce"]);
 
             //validate

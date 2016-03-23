@@ -14,7 +14,7 @@ namespace Griffin.Networking.Clients
         /// <param name="bufferReader">The buffer reader.</param>
         public ReceivedBufferEventArgs(IBufferReader bufferReader)
         {
-            BufferReader = bufferReader;
+            this.BufferReader = bufferReader;
         }
 
         /// <summary>

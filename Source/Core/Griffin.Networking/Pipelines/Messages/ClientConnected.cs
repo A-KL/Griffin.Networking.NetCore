@@ -15,7 +15,7 @@ namespace Griffin.Networking.Pipelines.Messages
         public ClientConnected(INetworkService client)
         {
             if (client == null) throw new ArgumentNullException("client");
-            Client = client;
+            this.Client = client;
         }
 
         /// <summary>

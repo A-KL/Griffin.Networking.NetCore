@@ -39,7 +39,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
                 var str = reader.ReadToEnd();
 
                 var sb = GetAlphaNumeric(str);
-                _logger.Trace(sb.ToString());
+                this._logger.Trace(sb.ToString());
             }
 
             var msg2 = message as SendStream;
@@ -50,7 +50,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
                 msg2.Stream.Position = 0;
                 var str = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
                 var sb = GetAlphaNumeric(str);
-                _logger.Trace(sb.ToString());
+                this._logger.Trace(sb.ToString());
             }
 
             context.SendDownstream(message);
@@ -80,7 +80,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
                 var reader = new StreamReader(stream);
                 var str = reader.ReadToEnd();
                 var sb = GetAlphaNumeric(str);
-                _logger.Trace(sb.ToString());
+                this._logger.Trace(sb.ToString());
             }
 
             context.SendUpstream(message);

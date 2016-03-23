@@ -18,8 +18,8 @@ namespace Griffin.Networking.Servers
         /// </summary>
         public ServerConfiguration()
         {
-            MaximumNumberOfClients = 100;
-            BufferSize = 65535;
+            this.MaximumNumberOfClients = 100;
+            this.BufferSize = 65535;
         }
 
         /// <summary>
@@ -28,13 +28,13 @@ namespace Griffin.Networking.Servers
         /// <value>Default = 100</value>
         public int MaximumNumberOfClients
         {
-            get { return maximumNumberOfClients; }
+            get { return this.maximumNumberOfClients; }
             set
             {
                 if (value < 1)
                     throw new ArgumentOutOfRangeException("value", value, "You should at least allow one connection.");
 
-                maximumNumberOfClients = value;
+                this.maximumNumberOfClients = value;
             }
         }
 
@@ -46,14 +46,14 @@ namespace Griffin.Networking.Servers
         public int BufferSize
 
         {
-            get { return bufferSize; }
+            get { return this.bufferSize; }
             set
             {
                 if (value < 1024)
                     throw new ArgumentException(
                         "Seriously, any buffer size under 1024 seems like a waste. Have you understood what the buffer is used for?");
 
-                bufferSize = value;
+                this.bufferSize = value;
             }
         }
 
@@ -64,10 +64,10 @@ namespace Griffin.Networking.Servers
         {
             get
             {
-                return bufferSliceStack ??
-                       (bufferSliceStack = new BufferSliceStack(MaximumNumberOfClients, BufferSize));
+                return this.bufferSliceStack ??
+                       (this.bufferSliceStack = new BufferSliceStack(this.MaximumNumberOfClients, this.BufferSize));
             }
-            set { bufferSliceStack = value; }
+            set { this.bufferSliceStack = value; }
         }
 
         /// <summary>

@@ -41,7 +41,7 @@ namespace Griffin.Networking.Protocol.Http
         ///   </PermissionSet>
         public override string ToString()
         {
-            return base.ToString() + "\r\nInner exception: " + inner;
+            return base.ToString() + "\r\nInner exception: " + this.inner;
         }
     }
 }

@@ -17,8 +17,8 @@ namespace Griffin.Networking.Servers
         {
             if (exception == null) throw new ArgumentNullException("exception");
             if (bufferSlice == null) throw new ArgumentNullException("bufferSlice");
-            BufferSlice = bufferSlice;
-            Exception = exception;
+            this.BufferSlice = bufferSlice;
+            this.Exception = exception;
         }
 
         /// <summary>

@@ -35,10 +35,10 @@ namespace Griffin.Networking.Protocol.Http
         public HttpMessageBuilder(IBufferSliceStack stack)
         {
             this.stack = stack;
-            headerParser.HeaderParsed += OnHeader;
-            headerParser.Completed += OnHeaderComplete;
-            headerParser.RequestLineParsed += OnRequestLine;
-            bodySlice = this.stack.Pop();
+            this.headerParser.HeaderParsed += this.OnHeader;
+            this.headerParser.Completed += this.OnHeaderComplete;
+            this.headerParser.RequestLineParsed += this.OnRequestLine;
+            this.bodySlice = this.stack.Pop();
         }
 
         #region IDisposable Members
@@ -49,7 +49,7 @@ namespace Griffin.Networking.Protocol.Http
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            stack.Push(bodySlice);
+            this.stack.Push(this.bodySlice);
         }
 
         #endregion
@@ -64,27 +64,27 @@ namespace Griffin.Networking.Protocol.Http
         /// <remarks>You must handle/read everything which is available in the buffer</remarks>
         public bool Append(IBufferReader reader)
         {
-            headerParser.Parse(reader);
-            if (bodyBytestLeft > 0)
+            this.headerParser.Parse(reader);
+            if (this.bodyBytestLeft > 0)
             {
-                var bytesToRead = Math.Min(reader.RemainingLength, bodyBytestLeft);
-                reader.CopyTo(bodyStream, bytesToRead);
-                bodyBytestLeft -= bytesToRead;
+                var bytesToRead = Math.Min(reader.RemainingLength, this.bodyBytestLeft);
+                reader.CopyTo(this.bodyStream, bytesToRead);
+                this.bodyBytestLeft -= bytesToRead;
 
-                if (bodyBytestLeft == 0)
+                if (this.bodyBytestLeft == 0)
                 {
-                    bodyStream.Position = 0;
-                    messages.Enqueue(message);
-                    message = null;
+                    this.bodyStream.Position = 0;
+                    this.messages.Enqueue(this.message);
+                    this.message = null;
                 }
 
                 if (reader.RemainingLength > 0)
                 {
-                    headerParser.Parse(reader);
+                    this.headerParser.Parse(reader);
                 }
             }
 
-            return messages.Count > 0;
+            return this.messages.Count > 0;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Griffin.Networking.Protocol.Http
         bool IMessageBuilder.TryDequeue(out object message)
         {
             IMessage msg;
-            var result = messages.TryDequeue(out msg);
+            var result = this.messages.TryDequeue(out msg);
             message = msg;
             return result;
         }
@@ -105,11 +105,11 @@ namespace Griffin.Networking.Protocol.Http
         /// </summary>
         public void Reset()
         {
-            bodyBytestLeft = 0;
-            headerParser.Reset();
+            this.bodyBytestLeft = 0;
+            this.headerParser.Reset();
 
             IMessage message;
-            while (messages.TryDequeue(out message))
+            while (this.messages.TryDequeue(out message))
             {
                 
             }
@@ -123,7 +123,7 @@ namespace Griffin.Networking.Protocol.Http
         public bool TryDequeue(out IMessage message)
         {
             IMessage msg;
-            var result = messages.TryDequeue(out msg);
+            var result = this.messages.TryDequeue(out msg);
             message = msg;
             return result;
         }
@@ -133,30 +133,30 @@ namespace Griffin.Networking.Protocol.Http
 
         private void OnRequestLine(object sender, RequestLineEventArgs e)
         {
-            message = new HttpRequest(e.Verb, e.Url, e.HttpVersion);
+            this.message = new HttpRequest(e.Verb, e.Url, e.HttpVersion);
         }
 
         private void OnHeaderComplete(object sender, EventArgs e)
         {
-            bodyBytestLeft = message.ContentLength;
-            if (message.ContentLength == 0)
+            this.bodyBytestLeft = this.message.ContentLength;
+            if (this.message.ContentLength == 0)
             {
-                messages.Enqueue(message);
-                message = null;
+                this.messages.Enqueue(this.message);
+                this.message = null;
                 return;
             }
 
-            if (message.ContentLength > bodySlice.Count)
-                bodyStream = new FileStream(Path.GetTempFileName(), FileMode.Create);
+            if (this.message.ContentLength > this.bodySlice.Count)
+                this.bodyStream = new FileStream(Path.GetTempFileName(), FileMode.Create);
             else
-                bodyStream = new SliceStream(bodySlice);
+                this.bodyStream = new SliceStream(this.bodySlice);
 
-            message.Body = bodyStream;
+            this.message.Body = this.bodyStream;
         }
 
         private void OnHeader(object sender, HeaderEventArgs e)
         {
-            message.AddHeader(e.Name, e.Value);
+            this.message.AddHeader(e.Name, e.Value);
         }
 
     }

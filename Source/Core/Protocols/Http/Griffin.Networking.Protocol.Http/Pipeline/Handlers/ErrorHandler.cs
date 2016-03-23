@@ -34,7 +34,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
         public HttpErrorHandler(IErrorFormatter formatter)
         {
             if (formatter == null) throw new ArgumentNullException("formatter");
-            _formatter = formatter;
+            this._formatter = formatter;
         }
 
         #region IUpstreamHandler Members
@@ -64,7 +64,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
             {
                 var response = msg.HttpRequest.CreateResponse(err.StatusCode, err.Message);
 
-                FormatException(response, msg, err);
+                this.FormatException(response, msg, err);
                 response.Body.Position = 0;
 
                 context.SendDownstream(new SendHttpResponse(msg.HttpRequest, response));
@@ -109,7 +109,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
             }
 
 
-            _logger.Error(sb.ToString(), err);
+            this._logger.Error(sb.ToString(), err);
         }
 
         /// <summary>
@@ -123,12 +123,12 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
             var formatterContext = new ErrorFormatterContext(exception, msg.HttpRequest, response);
             try
             {
-                _formatter.Format(formatterContext);
+                this._formatter.Format(formatterContext);
             }
             catch (Exception err)
             {
-                _logger.Error(
-                    string.Format("Formatter '{0}' failed to process request.", _formatter.GetType().FullName), err);
+                this._logger.Error(
+                    string.Format("Formatter '{0}' failed to process request.", this._formatter.GetType().FullName), err);
                 var formatter = new SimpleErrorFormatter();
                 formatter.Format(formatterContext);
             }

@@ -27,7 +27,7 @@ namespace Griffin.Networking.Pipelines.Messages
         /// </summary>
         public EndPoint RemoteEndPoint
         {
-            get { return remoteEndPoint; }
+            get { return this.remoteEndPoint; }
         }
     }
 }

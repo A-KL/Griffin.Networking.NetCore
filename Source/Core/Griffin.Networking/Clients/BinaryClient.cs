@@ -20,7 +20,7 @@ namespace Griffin.Networking.Clients
         /// </remarks>
         protected override void OnReceived(IBufferSlice buffer, int bytesRead)
         {
-            Received(this, new ReceivedBufferEventArgs(new SliceStream(buffer, bytesRead)));
+            this.Received(this, new ReceivedBufferEventArgs(new SliceStream(buffer, bytesRead)));
         }
 
         /// <summary>

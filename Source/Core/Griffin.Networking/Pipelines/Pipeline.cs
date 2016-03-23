@@ -39,7 +39,7 @@ namespace Griffin.Networking.Pipelines
         /// <param name="message">Message to process</param>
         public void HandleDownstream(IPipelineHandlerContext context, IPipelineMessage message)
         {
-            downStreamEndPoint.HandleDownstream(context, message);
+            this.downStreamEndPoint.HandleDownstream(context, message);
         }
 
         #endregion
@@ -53,9 +53,9 @@ namespace Griffin.Networking.Pipelines
         public void SetChannel(IDownstreamHandler handler)
         {
             if (handler == null) throw new ArgumentNullException("handler");
-            downStreamEndPoint = handler;
-            channelContext = new PipelineDownstreamContext(this, downStreamEndPoint);
-            downstreamContexts.Last.Value.NextHandler = channelContext;
+            this.downStreamEndPoint = handler;
+            this.channelContext = new PipelineDownstreamContext(this, this.downStreamEndPoint);
+            this.downstreamContexts.Last.Value.NextHandler = this.channelContext;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Griffin.Networking.Pipelines
         /// <param name="message">Message to send to the channel</param>
         public void SendDownstream(IPipelineMessage message)
         {
-            downstreamContexts.First.Value.Invoke(message);
+            this.downstreamContexts.First.Value.Invoke(message);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Griffin.Networking.Pipelines
         /// <param name="message">Message to send to the client</param>
         public void SendUpstream(IPipelineMessage message)
         {
-            upstreamContexts.First.Value.Invoke(message);
+            this.upstreamContexts.First.Value.Invoke(message);
         }
 
         #endregion
@@ -87,20 +87,20 @@ namespace Griffin.Networking.Pipelines
         {
             // always link with channel handler (will be replaced when the pipe is filled with more handlers
             // so that only the last handler has the channel as NextHandler).
-            var ctx = new PipelineDownstreamContext(this, handler) {NextHandler = channelContext};
+            var ctx = new PipelineDownstreamContext(this, handler) {NextHandler = this.channelContext};
 
-            var last = downstreamContexts.Last;
+            var last = this.downstreamContexts.Last;
             if (last != null)
             {
-                logger.Debug("Added downstream handler " + handler + " and linked it as next handler for " + last.Value);
+                this.logger.Debug("Added downstream handler " + handler + " and linked it as next handler for " + last.Value);
                 last.Value.NextHandler = ctx;
             }
             else
             {
-                logger.Debug("Added downstream handler " + handler);
+                this.logger.Debug("Added downstream handler " + handler);
             }
 
-            downstreamContexts.AddLast(ctx);
+            this.downstreamContexts.AddLast(ctx);
         }
 
         /// <summary>
@@ -111,19 +111,19 @@ namespace Griffin.Networking.Pipelines
         public void AddUpstreamHandler(IUpstreamHandler handler)
         {
             var ctx = new PipelineUpstreamContext(this, handler);
-            var last = upstreamContexts.Last;
+            var last = this.upstreamContexts.Last;
             if (last != null)
             {
-                logger.Debug("Added upstream handler " + handler + " and linked it as next handler for " + last.Value);
+                this.logger.Debug("Added upstream handler " + handler + " and linked it as next handler for " + last.Value);
                 last.Value.NextHandler = ctx;
             }
             else
             {
-                logger.Debug("Added upstream handler " + handler);
+                this.logger.Debug("Added upstream handler " + handler);
             }
 
 
-            upstreamContexts.AddLast(ctx);
+            this.upstreamContexts.AddLast(ctx);
         }
 
 
@@ -136,12 +136,12 @@ namespace Griffin.Networking.Pipelines
         /// <filterpriority>2</filterpriority>
         public override string ToString()
         {
-            var value = downstreamContexts.Aggregate("Downstream [",
+            var value = this.downstreamContexts.Aggregate("Downstream [",
                                                       (current, context) => current + (context + ", "));
             value = value.Remove(value.Length - 2, 2);
 
             value += "], Upstream [";
-            value = upstreamContexts.Aggregate(value, (current, context) => current + (context + ", "));
+            value = this.upstreamContexts.Aggregate(value, (current, context) => current + (context + ", "));
             value = value.Remove(value.Length - 2, 2) + "]";
 
             return value;

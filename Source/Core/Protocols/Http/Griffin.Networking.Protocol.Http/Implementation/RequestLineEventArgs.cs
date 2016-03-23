@@ -10,9 +10,9 @@ namespace Griffin.Networking.Protocol.Http.Implementation
     {
         public RequestLineEventArgs(string verb, string url, string httpVersion)
         {
-            Verb = verb;
-            Url = url;
-            HttpVersion = httpVersion;
+            this.Verb = verb;
+            this.Url = url;
+            this.HttpVersion = httpVersion;
         }
 
         /// <summary>

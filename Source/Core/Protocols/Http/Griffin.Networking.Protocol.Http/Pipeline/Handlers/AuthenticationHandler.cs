@@ -21,8 +21,8 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
         /// <param name="principalFactory">Used to generate the principal which is set for the current thread</param>
         public AuthenticationHandler(IAuthenticator authenticator, IPrincipalFactory principalFactory)
         {
-            _authenticator = authenticator;
-            _principalFactory = principalFactory;
+            this._authenticator = authenticator;
+            this._principalFactory = principalFactory;
         }
 
         #region IDownstreamHandler Members
@@ -47,7 +47,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
 
             if (msg.Response.StatusCode == (int) HttpStatusCode.Unauthorized)
             {
-                _authenticator.CreateChallenge(msg.Request, msg.Response);
+                this._authenticator.CreateChallenge(msg.Request, msg.Response);
             }
 
             context.SendDownstream(message);
@@ -84,7 +84,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
             IAuthenticationUser user;
             try
             {
-                user = _authenticator.Authenticate(msg.HttpRequest);
+                user = this._authenticator.Authenticate(msg.HttpRequest);
             }
             catch (HttpException err)
             {
@@ -101,8 +101,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Handlers
             }
             else
             {
-                var principal =
-                    _principalFactory.Create(new PrincipalFactoryContext(msg.HttpRequest, user));
+                var principal = this._principalFactory.Create(new PrincipalFactoryContext(msg.HttpRequest, user));
                 //Thread.CurrentPrincipal = principal;
                 context.SendUpstream(message);
             }

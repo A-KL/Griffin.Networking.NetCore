@@ -34,7 +34,7 @@ namespace Griffin.Networking.Protocol.Http.Services.Authentication
         /// <returns>The realm that the request belongs to</returns>
         public string GetRealm(IRequest request)
         {
-            return name;
+            return this.name;
         }
 
         #endregion

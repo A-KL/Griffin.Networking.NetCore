@@ -11,7 +11,7 @@ namespace Griffin.Networking.Protocol.Http.Pipeline.Messages
     {
         public HttpError(HttpStatusCode statusCode, Exception exception) : base(exception)
         {
-            StatusCode = statusCode;
+            this.StatusCode = statusCode;
         }
 
         public HttpStatusCode StatusCode { get; private set; }

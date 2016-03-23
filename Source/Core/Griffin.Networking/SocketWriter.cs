@@ -23,18 +23,18 @@ namespace Griffin.Networking
         /// </summary>
         public SocketWriter()
         {
-            writeArgs.Completed += OnWriteCompleted;
+            this.writeArgs.Completed += this.OnWriteCompleted;
         }
 
         private void OnWriteCompleted(object sender, SocketAsyncEventArgs e)
         {
             try
             {
-                HandleWriteCompleted(e.SocketError, e.BytesTransferred);
+                this.HandleWriteCompleted(e.SocketError, e.BytesTransferred);
             }
             catch (Exception err)
             {
-                logger.Error("Failed to handle write completed.", err);
+                this.logger.Error("Failed to handle write completed.", err);
             }
         }
 
@@ -61,67 +61,67 @@ namespace Griffin.Networking
         public void Send(ISocketWriterJob job)
         {
             if (job == null) throw new ArgumentNullException("job");
-            if (socket == null || !socket.Connected)
+            if (this.socket == null || !this.socket.Connected)
                 throw new InvalidOperationException("Socket is not connected.");
 
             lock (this)
             {
-                if (currentJob != null)
+                if (this.currentJob != null)
                 {
-                    logger.Debug(writeArgs.GetHashCode() + ": Enqueueing ");
-                    writeQueue.Enqueue(job);
+                    this.logger.Debug(this.writeArgs.GetHashCode() + ": Enqueueing ");
+                    this.writeQueue.Enqueue(job);
                     return;
                 }
 
-                logger.Debug(writeArgs.GetHashCode() + ": sending directly ");
-                currentJob = job;
+                this.logger.Debug(this.writeArgs.GetHashCode() + ": sending directly ");
+                this.currentJob = job;
             }
 
-            currentJob.Write(writeArgs);
+            this.currentJob.Write(this.writeArgs);
 
-            var isPending = socket.SendAsync(writeArgs);
+            var isPending = this.socket.SendAsync(this.writeArgs);
             if (!isPending)
-                HandleWriteCompleted(writeArgs.SocketError, writeArgs.BytesTransferred);
+                this.HandleWriteCompleted(this.writeArgs.SocketError, this.writeArgs.BytesTransferred);
         }
 
         private void HandleWriteCompleted(SocketError error, int bytesTransferred)
         {
-            if (currentJob == null || socket == null || !socket.Connected)
+            if (this.currentJob == null || this.socket == null || !this.socket.Connected)
                 return; // got disconnected
 
             if (error == SocketError.Success && bytesTransferred > 0)
             {
                 lock (this)
                 {
-                    if (currentJob.WriteCompleted(bytesTransferred))
+                    if (this.currentJob.WriteCompleted(bytesTransferred))
                     {
-                        currentJob.Dispose();
-                        if (!writeQueue.TryDequeue(out currentJob))
+                        this.currentJob.Dispose();
+                        if (!this.writeQueue.TryDequeue(out this.currentJob))
                         {
-                            logger.Debug(writeArgs.GetHashCode() + ": no new job ");
-                            currentJob = null;
+                            this.logger.Debug(this.writeArgs.GetHashCode() + ": no new job ");
+                            this.currentJob = null;
                             return;
                         }
                     }
                 }
 
-                currentJob.Write(writeArgs);
-                var isPending = socket.SendAsync(writeArgs);
+                this.currentJob.Write(this.writeArgs);
+                var isPending = this.socket.SendAsync(this.writeArgs);
                 if (!isPending)
-                    HandleWriteCompleted(writeArgs.SocketError, writeArgs.BytesTransferred);
+                    this.HandleWriteCompleted(this.writeArgs.SocketError, this.writeArgs.BytesTransferred);
             }
             else
             {
                 if (error == SocketError.Success)
                     error = SocketError.ConnectionReset;
-                HandleDisconnect(error);
+                this.HandleDisconnect(error);
             }
         }
 
         private void HandleDisconnect(SocketError error)
         {
-            Reset();
-            Disconnected(this, new DisconnectEventArgs(error));
+            this.Reset();
+            this.Disconnected(this, new DisconnectEventArgs(error));
         }
 
         /// <summary>
@@ -134,18 +134,18 @@ namespace Griffin.Networking
         /// </summary>
         public void Reset()
         {
-            if (currentJob != null)
-                currentJob.Dispose();
-            currentJob = null;
+            if (this.currentJob != null)
+                this.currentJob.Dispose();
+            this.currentJob = null;
 
 
             ISocketWriterJob job;
-            while (writeQueue.TryDequeue(out job))
+            while (this.writeQueue.TryDequeue(out job))
             {
                 job.Dispose();
             }
 
-            socket = null;
+            this.socket = null;
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace Griffin.Networking
         public void SetBuffer(IBufferSlice bufferSlice)
         {
             if (bufferSlice == null) throw new ArgumentNullException("bufferSlice");
-            writeArgs.UserToken = bufferSlice;
+            this.writeArgs.UserToken = bufferSlice;
         }
     }
 }

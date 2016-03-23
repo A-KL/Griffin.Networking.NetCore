@@ -35,7 +35,7 @@ namespace Griffin.Networking.Servers
         protected override INetworkService CreateClient(EndPoint remoteEndPoint)
         {
             if (remoteEndPoint == null) throw new ArgumentNullException("remoteEndPoint");
-            return clientFactory.CreateClient(remoteEndPoint);
+            return this.clientFactory.CreateClient(remoteEndPoint);
         }
     }
 }

@@ -21,22 +21,22 @@ namespace Griffin.Networking.Pipelines
 
         public PipelineUpstreamContext NextHandler
         {
-            set { nextHandler = value; }
+            set { this.nextHandler = value; }
         }
 
         #region IPipelineHandlerContext Members
 
         public void SendUpstream(IPipelineMessage message)
         {
-            if (nextHandler != null)
+            if (this.nextHandler != null)
             {
-                logger.Trace("Up: " + myHandler.ToStringOrClassName() + " sends message " +
+                this.logger.Trace("Up: " + this.myHandler.ToStringOrClassName() + " sends message " +
                               message.ToStringOrClassName());
-                nextHandler.Invoke(message);
+                this.nextHandler.Invoke(message);
             }
             else
             {
-                logger.Warning("Up: " + myHandler.ToStringOrClassName() + " tried to send message " +
+                this.logger.Warning("Up: " + this.myHandler.ToStringOrClassName() + " tried to send message " +
                                 message.ToStringOrClassName() + ", but there are no handler upstream.");
             }
         }
@@ -44,20 +44,20 @@ namespace Griffin.Networking.Pipelines
 
         public void SendDownstream(IPipelineMessage message)
         {
-            logger.Trace("Down: " + myHandler.ToStringOrClassName() + " sends " + message.ToStringOrClassName());
-            pipeline.SendDownstream(message);
+            this.logger.Trace("Down: " + this.myHandler.ToStringOrClassName() + " sends " + message.ToStringOrClassName());
+            this.pipeline.SendDownstream(message);
         }
 
         #endregion
 
         public void Invoke(IPipelineMessage message)
         {
-            myHandler.HandleUpstream(this, message);
+            this.myHandler.HandleUpstream(this, message);
         }
 
         public override string ToString()
         {
-            return myHandler.ToString();
+            return this.myHandler.ToString();
         }
     }
 }

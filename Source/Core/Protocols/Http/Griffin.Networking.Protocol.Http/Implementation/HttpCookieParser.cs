@@ -31,118 +31,118 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         {
             get
             {
-                if (index >= headerValue.Length)
+                if (this.index >= this.headerValue.Length)
                     return char.MinValue;
 
-                return headerValue[index];
+                return this.headerValue[this.index];
             }
         }
 
         protected bool IsEof
         {
-            get { return index >= headerValue.Length; }
+            get { return this.index >= this.headerValue.Length; }
         }
 
         protected void Name_Before()
         {
-            while (char.IsWhiteSpace(Current))
+            while (char.IsWhiteSpace(this.Current))
             {
-                MoveNext();
+                this.MoveNext();
             }
 
-            parserMethod = Name;
+            this.parserMethod = this.Name;
         }
 
         protected virtual void Name()
         {
-            while (!char.IsWhiteSpace(Current) && Current != '=')
+            while (!char.IsWhiteSpace(this.Current) && this.Current != '=')
             {
-                cookieName += Current;
-                MoveNext();
+                this.cookieName += this.Current;
+                this.MoveNext();
             }
 
-            parserMethod = Name_After;
+            this.parserMethod = this.Name_After;
         }
 
         protected virtual void Name_After()
         {
-            while (char.IsWhiteSpace(Current) || Current == ':')
+            while (char.IsWhiteSpace(this.Current) || this.Current == ':')
             {
-                MoveNext();
+                this.MoveNext();
             }
 
-            parserMethod = Value_Before;
+            this.parserMethod = this.Value_Before;
         }
 
         protected virtual void Value_Before()
         {
-            if (Current == '"')
-                parserMethod = Value_Qouted;
+            if (this.Current == '"')
+                this.parserMethod = this.Value_Qouted;
             else
-                parserMethod = Value;
+                this.parserMethod = this.Value;
 
-            MoveNext();
+            this.MoveNext();
         }
 
         private void Value()
         {
-            while (Current != ';' && !IsEof)
+            while (this.Current != ';' && !this.IsEof)
             {
-                cookieValue += Current;
-                MoveNext();
+                this.cookieValue += this.Current;
+                this.MoveNext();
             }
 
-            parserMethod = Value_After;
+            this.parserMethod = this.Value_After;
         }
 
         private void Value_Qouted()
         {
-            MoveNext(); // skip '"'
+            this.MoveNext(); // skip '"'
 
             var last = char.MinValue;
-            while (Current != '"' && !IsEof)
+            while (this.Current != '"' && !this.IsEof)
             {
-                if (Current == '"' && last == '\\')
+                if (this.Current == '"' && last == '\\')
                 {
-                    cookieValue += '#';
-                    MoveNext();
+                    this.cookieValue += '#';
+                    this.MoveNext();
                 }
                 else
                 {
-                    cookieValue += Current;
+                    this.cookieValue += this.Current;
                 }
 
-                last = Current;
-                MoveNext();
+                last = this.Current;
+                this.MoveNext();
             }
 
-            parserMethod = Value_After;
+            this.parserMethod = this.Value_After;
         }
 
         private void Value_After()
         {
-            OnCookie(cookieName, cookieValue);
-            cookieName = "";
-            cookieValue = "";
-            while (char.IsWhiteSpace(Current) || Current == ';')
+            this.OnCookie(this.cookieName, this.cookieValue);
+            this.cookieName = "";
+            this.cookieValue = "";
+            while (char.IsWhiteSpace(this.Current) || this.Current == ';')
             {
-                MoveNext();
+                this.MoveNext();
             }
 
-            parserMethod = Name_Before;
+            this.parserMethod = this.Name_Before;
         }
 
         private void OnCookie(string name, string value)
         {
             if (name == null) throw new ArgumentNullException("name");
 
-            cookies.Add(new HttpCookie(name, value));
+            this.cookies.Add(new HttpCookie(name, value));
         }
 
         private void MoveNext()
         {
-            if (!IsEof)
-                ++index;
+            if (!this.IsEof)
+                ++this.index;
         }
 
         /// <summary>
@@ -151,16 +151,16 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// <returns>A generated cookie collection.</returns>
         public IHttpCookieCollection<IHttpCookie> Parse()
         {
-            cookies = new HttpCookieCollection<IHttpCookie>();
-            parserMethod = Name_Before;
+            this.cookies = new HttpCookieCollection<IHttpCookie>();
+            this.parserMethod = this.Name_Before;
 
-            while (!IsEof)
+            while (!this.IsEof)
             {
-                parserMethod();
+                this.parserMethod();
             }
 
-            OnCookie(cookieName, cookieValue);
-            return cookies;
+            this.OnCookie(this.cookieName, this.cookieValue);
+            return this.cookies;
         }
     }
 }

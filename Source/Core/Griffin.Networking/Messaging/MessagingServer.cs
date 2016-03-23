@@ -21,7 +21,7 @@ namespace Griffin.Networking.Messaging
         {
             if (clientFactory == null) throw new ArgumentNullException("clientFactory");
             if (configuration == null) throw new ArgumentNullException("configuration");
-            formatterFactory = configuration.MessageFormatterFactory;
+            this.formatterFactory = configuration.MessageFormatterFactory;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Griffin.Networking.Messaging
         protected override ServerClientContext CreateClientContext(IBufferSlice readBuffer)
         {
             if (readBuffer == null) throw new ArgumentNullException("readBuffer");
-            return new MessagingClientContext(readBuffer, formatterFactory);
+            return new MessagingClientContext(readBuffer, this.formatterFactory);
         }
     }
 }

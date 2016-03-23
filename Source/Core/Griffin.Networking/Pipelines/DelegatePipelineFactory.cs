@@ -24,14 +24,14 @@ namespace Griffin.Networking.Pipelines
         {
             var pipeline = new Pipeline();
 
-            foreach (var handler in uptreamHandlers)
+            foreach (var handler in this.uptreamHandlers)
             {
                 if (handler.Factory != null)
                     pipeline.AddUpstreamHandler(handler.Factory());
                 else
                     pipeline.AddUpstreamHandler(handler.Handler);
             }
-            foreach (var handler in downstreamHandlers)
+            foreach (var handler in this.downstreamHandlers)
             {
                 if (handler.Factory != null)
                     pipeline.AddDownstreamHandler(handler.Factory());
@@ -49,7 +49,7 @@ namespace Griffin.Networking.Pipelines
         /// <param name="factoryMethod">The factory method.</param>
         public void AddDownstreamHandler(Func<IDownstreamHandler> factoryMethod)
         {
-            downstreamHandlers.AddLast(new HandlerInformation<IDownstreamHandler>(factoryMethod));
+            this.downstreamHandlers.AddLast(new HandlerInformation<IDownstreamHandler>(factoryMethod));
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Griffin.Networking.Pipelines
         /// <remarks>Same instance will be used for all channels. Use the <see cref="IPipelineHandlerContext"/> to store any context information.</remarks>
         public void AddDownstreamHandler(IDownstreamHandler handler)
         {
-            downstreamHandlers.AddLast(new HandlerInformation<IDownstreamHandler>(handler));
+            this.downstreamHandlers.AddLast(new HandlerInformation<IDownstreamHandler>(handler));
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Griffin.Networking.Pipelines
         /// <param name="factoryMethod">The factory method.</param>
         public void AddUpstreamHandler(Func<IUpstreamHandler> factoryMethod)
         {
-            uptreamHandlers.AddLast(new HandlerInformation<IUpstreamHandler>(factoryMethod));
+            this.uptreamHandlers.AddLast(new HandlerInformation<IUpstreamHandler>(factoryMethod));
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Griffin.Networking.Pipelines
         /// <remarks>Same instance will be used for all channels. Use the <see cref="IPipelineHandlerContext"/> to store any context information.</remarks>
         public void AddUpstreamHandler(IUpstreamHandler handler)
         {
-            uptreamHandlers.AddLast(new HandlerInformation<IUpstreamHandler>(handler));
+            this.uptreamHandlers.AddLast(new HandlerInformation<IUpstreamHandler>(handler));
         }
 
         #region Nested type: HandlerInformation
@@ -87,12 +87,12 @@ namespace Griffin.Networking.Pipelines
         {
             public HandlerInformation(Func<T> factory)
             {
-                Factory = factory;
+                this.Factory = factory;
             }
 
             public HandlerInformation(T handler)
             {
-                Handler = handler;
+                this.Handler = handler;
             }
 
             public T Handler { get; private set; }

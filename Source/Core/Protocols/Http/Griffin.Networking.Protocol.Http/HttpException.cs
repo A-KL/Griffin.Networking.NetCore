@@ -13,7 +13,7 @@ namespace Griffin.Networking.Protocol.Http
         public HttpException(HttpStatusCode statusCode, string message)
             : base(message)
         {
-            StatusCode = statusCode;
+            this.StatusCode = statusCode;
         }
 
         /// <summary>

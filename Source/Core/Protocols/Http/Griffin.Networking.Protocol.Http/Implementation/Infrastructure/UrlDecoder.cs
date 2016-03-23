@@ -60,7 +60,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation.Infrastructure
 
             var reader = new StringReader(queryString);
             var col = new ParameterCollection();
-            Parse(reader, col);
+            this.Parse(reader, col);
             return col;
         }
     }

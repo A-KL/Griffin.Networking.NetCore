@@ -20,8 +20,8 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             if (name == null) throw new ArgumentNullException("name");
             if (value == null) throw new ArgumentNullException("value");
 
-            Name = name;
-            Value = value;
+            this.Name = name;
+            this.Value = value;
         }
 
         #region IHttpCookie Members

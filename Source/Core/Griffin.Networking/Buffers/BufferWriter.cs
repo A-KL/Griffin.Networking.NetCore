@@ -35,10 +35,10 @@ namespace Griffin.Networking.Buffers
         {
             get
             {
-                if (slice == null)
+                if (this.slice == null)
                     throw new InvalidOperationException("No buffer is currently assigned.");
 
-                return slice.Buffer;
+                return this.slice.Buffer;
             }
         }
 
@@ -59,7 +59,7 @@ namespace Griffin.Networking.Buffers
         /// </summary>
         public int Capacity
         {
-            get { return slice == null ? 0 : slice.Count; }
+            get { return this.slice == null ? 0 : this.slice.Count; }
         }
 
         /// <summary>
@@ -75,16 +75,16 @@ namespace Griffin.Networking.Buffers
             if (buffer == null) throw new ArgumentNullException("buffer");
             if (offset < 0 || offset >= buffer.Length)
                 throw new ArgumentOutOfRangeException("offset", offset, "Must be 0 >= x < " + buffer.Length);
-            if (count + Position >= slice.Count)
+            if (count + this.Position >= this.slice.Count)
                 throw new ArgumentOutOfRangeException("count", count,
-                                                      "Position + count must be less than " + slice.Count);
+                                                      "Position + count must be less than " + this.slice.Count);
             if (offset + count > buffer.Length)
                 throw new ArgumentOutOfRangeException("offset", offset,
                                                       "Offset + Count must be less than " + buffer.Length);
 
-            System.Buffer.BlockCopy(buffer, offset, slice.Buffer, Position + slice.Offset, count);
-            Forward(count);
-            Count += count;
+            System.Buffer.BlockCopy(buffer, offset, this.slice.Buffer, this.Position + this.slice.Offset, count);
+            this.Forward(count);
+            this.Count += count;
         }
 
         /// <summary>
@@ -95,14 +95,14 @@ namespace Griffin.Networking.Buffers
         {
             if (stream == null) throw new ArgumentNullException("stream");
             var bytesToCopy = (int) (stream.Length - stream.Position);
-            if (bytesToCopy > Capacity - Position)
+            if (bytesToCopy > this.Capacity - this.Position)
                 throw new ArgumentOutOfRangeException("stream", stream,
                                                       "Stream.Length - Stream.Position (= bytes to copy) is larger then the amount of bytes left in the buffer slice.");
 
             while (true)
             {
-                var bytesRead = stream.Read(slice.Buffer, slice.Offset + Position, bytesToCopy);
-                Forward(bytesRead);
+                var bytesRead = stream.Read(this.slice.Buffer, this.slice.Offset + this.Position, bytesToCopy);
+                this.Forward(bytesRead);
                 bytesToCopy -= bytesRead;
                 if (bytesToCopy == 0)
                     break;
@@ -117,7 +117,7 @@ namespace Griffin.Networking.Buffers
         /// <param name="bytesToMove">Number of bytes to move forward</param>
         public void Forward(int bytesToMove)
         {
-            Position += bytesToMove;
+            this.Position += bytesToMove;
         }
 
         /// <summary>
@@ -131,8 +131,8 @@ namespace Griffin.Networking.Buffers
             if (this.slice != null)
                 throw new InvalidOperationException("You must reset the writer before assigning a new buffer.");
 
-            Count = slice.Count;
-            Position = slice.Offset;
+            this.Count = slice.Count;
+            this.Position = slice.Offset;
             this.slice = slice;
         }
 
@@ -141,13 +141,13 @@ namespace Griffin.Networking.Buffers
         /// </summary>
         public void Reset()
         {
-            var disposable = slice as IDisposable;
+            var disposable = this.slice as IDisposable;
             if (disposable != null)
                 disposable.Dispose();
 
-            slice = null;
-            Count = 0;
-            Position = 0;
+            this.slice = null;
+            this.Count = 0;
+            this.Position = 0;
         }
     }
 }

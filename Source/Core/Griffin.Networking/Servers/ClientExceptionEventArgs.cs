@@ -21,10 +21,10 @@ namespace Griffin.Networking.Servers
             if (exception == null) throw new ArgumentNullException("exception");
             if (buffer == null) throw new ArgumentNullException("buffer");
 
-            ClientContext = clientContext;
-            Exception = exception;
-            Buffer = buffer;
-            CanContinue = true;
+            this.ClientContext = clientContext;
+            this.Exception = exception;
+            this.Buffer = buffer;
+            this.CanContinue = true;
         }
 
         /// <summary>

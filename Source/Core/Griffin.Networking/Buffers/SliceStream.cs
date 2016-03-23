@@ -21,8 +21,8 @@ namespace Griffin.Networking.Buffers
         {
             if (slice == null) throw new ArgumentNullException("slice");
             this.slice = slice;
-            offset = 0;
-            length = 0;
+            this.offset = 0;
+            this.length = 0;
         }
 
 
@@ -41,7 +41,7 @@ namespace Griffin.Networking.Buffers
                                                       "Must be less or equal to slice length which is " + slice.Count);
 
             this.slice = slice;
-            offset = 0;
+            this.offset = 0;
             this.length = length;
         }
 
@@ -90,7 +90,7 @@ namespace Griffin.Networking.Buffers
         /// <exception cref="T:System.NotSupportedException">A class derived from Stream does not support seeking. </exception><exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception><filterpriority>1</filterpriority>
         public override long Length
         {
-            get { return length; }
+            get { return this.length; }
         }
 
         /// <summary>
@@ -102,17 +102,16 @@ namespace Griffin.Networking.Buffers
         /// <exception cref="T:System.IO.IOException">An I/O error occurs. </exception><exception cref="T:System.NotSupportedException">The stream does not support seeking. </exception><exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception><filterpriority>1</filterpriority>
         public override long Position
         {
-            get { return offset; }
+            get { return this.offset; }
             set
             {
-                if (value > Length)
+                if (value > this.Length)
                     throw new ArgumentOutOfRangeException("value", value,
-                                                          "Position must be less than the written length which is " +
-                                                          Length);
+                                                          "Position must be less than the written length which is " + this.Length);
                 if (value < 0)
                     throw new ArgumentOutOfRangeException("value", value, "Position must be equal to 0 or larger.");
 
-                offset = value;
+                this.offset = value;
             }
         }
 
@@ -133,14 +132,14 @@ namespace Griffin.Networking.Buffers
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
             if (offset >= buffer.Length || offset < 0)
-                throw new ArgumentOutOfRangeException("offset", offset, "Must be 0 >= x < " + slice.Count);
-            if (count + offset >= slice.Count)
+                throw new ArgumentOutOfRangeException("offset", offset, "Must be 0 >= x < " + this.slice.Count);
+            if (count + offset >= this.slice.Count)
                 throw new ArgumentOutOfRangeException("count", count,
-                                                      "offset + count must be less than slice size: " + slice.Count);
+                                                      "offset + count must be less than slice size: " + this.slice.Count);
 
-            var toRead = Math.Min(count, RemainingLength);
-            Buffer.BlockCopy(slice.Buffer, (int) (slice.Offset + Position), buffer, offset, toRead);
-            Position += toRead;
+            var toRead = Math.Min(count, this.RemainingLength);
+            Buffer.BlockCopy(this.slice.Buffer, (int) (this.slice.Offset + this.Position), buffer, offset, toRead);
+            this.Position += toRead;
             return toRead;
         }
 
@@ -150,11 +149,11 @@ namespace Griffin.Networking.Buffers
         /// <returns>Byte if read; -1 if end of stream.</returns>
         public int Read()
         {
-            if (RemainingLength == 0)
+            if (this.RemainingLength == 0)
                 return -1;
 
-            var ch = slice.Buffer[slice.Offset + Position];
-            ++Position;
+            var ch = this.slice.Buffer[this.slice.Offset + this.Position];
+            ++this.Position;
             return ch;
         }
 
@@ -167,12 +166,12 @@ namespace Griffin.Networking.Buffers
         public new int CopyTo(Stream other, int count)
         {
             if (other == null) throw new ArgumentNullException("other");
-            if (count + Position > slice.Count)
+            if (count + this.Position > this.slice.Count)
                 throw new ArgumentOutOfRangeException("count", count,
                                                       "Count+Position is larger than the allocated buffer size");
 
-            other.Write(slice.Buffer, (int) (slice.Offset + Position), count);
-            Position = Position + count;
+            other.Write(this.slice.Buffer, (int) (this.slice.Offset + this.Position), count);
+            this.Position = this.Position + count;
             return count;
         }
 
@@ -181,7 +180,7 @@ namespace Griffin.Networking.Buffers
         /// </summary>
         public int RemainingLength
         {
-            get { return (int) (Length - Position); }
+            get { return (int) (this.Length - this.Position); }
         }
 
         /// <summary>
@@ -197,20 +196,20 @@ namespace Griffin.Networking.Buffers
             if (buffer == null) throw new ArgumentNullException("buffer");
             if (offset < 0 || offset >= buffer.Length)
                 throw new ArgumentOutOfRangeException("offset", offset, "Must be 0 >= x < " + buffer.Length);
-            if (count + Position >= slice.Count)
+            if (count + this.Position >= this.slice.Count)
                 throw new ArgumentOutOfRangeException("count", count,
-                                                      "Position + count must be less than " + slice.Count);
+                                                      "Position + count must be less than " + this.slice.Count);
             if (offset + count > buffer.Length)
                 throw new ArgumentOutOfRangeException("offset", offset,
                                                       "Offset + Count must be less than " + buffer.Length);
 
-            Buffer.BlockCopy(buffer, offset, slice.Buffer, (int) (slice.Offset + Position), count);
+            Buffer.BlockCopy(buffer, offset, this.slice.Buffer, (int) (this.slice.Offset + this.Position), count);
 
-            var newCount = Position + count;
-            if (newCount > length)
-                length = newCount;
+            var newCount = this.Position + count;
+            if (newCount > this.length)
+                this.length = newCount;
 
-            Position += count;
+            this.Position += count;
         }
 
         /// <summary>
@@ -225,18 +224,18 @@ namespace Griffin.Networking.Buffers
 
         int IBufferWrapper.Count
         {
-            get { return (int) Length; }
+            get { return (int) this.Length; }
         }
 
         int IBufferWrapper.Capacity
         {
-            get { return slice.Count; }
+            get { return this.slice.Count; }
         }
 
         int IBufferWrapper.Position
         {
-            get { return (int) Position; }
-            set { Position = value; }
+            get { return (int) this.Position; }
+            set { this.Position = value; }
         }
 
         #endregion
@@ -249,10 +248,10 @@ namespace Griffin.Networking.Buffers
         /// <returns>Char if not EOF; otherwise <see cref="char.MinValue"/></returns>
         public char Peek()
         {
-            if (RemainingLength <= 0)
+            if (this.RemainingLength <= 0)
                 return char.MinValue;
 
-            return (char) slice.Buffer[slice.Offset + Position + 1];
+            return (char) this.slice.Buffer[this.slice.Offset + this.Position + 1];
         }
 
         #endregion
@@ -277,17 +276,17 @@ namespace Griffin.Networking.Buffers
             switch (origin)
             {
                 case SeekOrigin.Begin:
-                    Position = offset;
+                    this.Position = offset;
                     break;
                 case SeekOrigin.Current:
-                    Position += offset;
+                    this.Position += offset;
                     break;
                 default:
-                    Position = Length - offset;
+                    this.Position = this.Length - offset;
                     break;
             }
 
-            return Position;
+            return this.Position;
         }
 
         /// <summary>
@@ -299,7 +298,7 @@ namespace Griffin.Networking.Buffers
             if (value < 0)
                 throw new ArgumentOutOfRangeException("value", value, "Length must be 0 or larger.");
 
-            length = value;
+            this.length = value;
         }
     }
 }

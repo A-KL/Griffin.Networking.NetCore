@@ -21,7 +21,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
             get
             {
                 if (name == null) throw new ArgumentNullException("name");
-                return files.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                return this.files.FirstOrDefault(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             }
         }
 
@@ -30,7 +30,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public int Count
         {
-            get { return files.Count; }
+            get { return this.files.Count; }
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public bool Contains(string name)
         {
             if (name == null) throw new ArgumentNullException("name");
-            return files.Any(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            return this.files.Any(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         public void Add(IHttpFile file)
         {
             if (file == null) throw new ArgumentNullException("file");
-            files.Add(file);
+            this.files.Add(file);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Griffin.Networking.Protocol.Http.Implementation
         /// </summary>
         public void Clear()
         {
-            files.Clear();
+            this.files.Clear();
         }
 
         #endregion

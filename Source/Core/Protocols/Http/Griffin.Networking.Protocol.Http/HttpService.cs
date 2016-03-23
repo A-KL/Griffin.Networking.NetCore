@@ -59,12 +59,12 @@ namespace Griffin.Networking.Protocol.Http
             // Violates LSP, but the best solution that I could come up with.
             var ourRequest = message as HttpRequest;
             if (ourRequest != null)
-                ourRequest.RemoteEndPoint = Context.RemoteEndPoint;
+                ourRequest.RemoteEndPoint = this.Context.RemoteEndPoint;
 
             var request = (IRequest)message;
-            request.AddHeader("RemoteAddress", Context.RemoteEndPoint.ToString());
+            request.AddHeader("RemoteAddress", this.Context.RemoteEndPoint.ToString());
 
-            OnRequest(request);
+            this.OnRequest(request);
         }
 
         /// <summary>
